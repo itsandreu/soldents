@@ -13,5 +13,8 @@ class Paciente extends Model
     {
         return $this->belongsTo(Persona::class, 'persona_id');
     }
-
+    public function trabajos()
+    {
+        return $this->hasMany(Trabajo::class);
+    }
 }
