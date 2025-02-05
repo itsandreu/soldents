@@ -11,8 +11,9 @@ class Persona extends Model
         'nombre',
         'apellidos',
         'telefono',
-        'tipo'
+        'tipo',
     ];
+
 
     public function clinica()
     {

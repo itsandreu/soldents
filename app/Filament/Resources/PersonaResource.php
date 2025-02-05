@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -35,7 +36,9 @@ class PersonaResource extends Resource
                 Radio::make('tipo')
                 ->options([
                     'paciente' => 'Paciente',
-                    'doctor' => 'Doctor',
+                    'doctorImplantes' => 'Doctor Implantes',
+                    'doctorOrtodoncia' => 'Doctor Ortodoncia',
+                    'doctorFija' => 'Doctor Fija',
                 ])
             ]);
     }

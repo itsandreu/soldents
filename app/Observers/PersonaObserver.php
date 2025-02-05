@@ -34,7 +34,7 @@ class PersonaObserver
             if ($persona->tipo === 'paciente') {
                 Paciente::create(['persona_id' => $persona->id]);
             } elseif ($persona->tipo === 'doctor') {
-                Doctor::create(['persona_id' => $persona->id]);
+                Doctor::create(['persona_id' => $persona->id,'especialidad' => $persona->especialidad]);
             }
         }
     }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('telefono')->nullable();
             $table->timestamps();
             $table->foreign('clinica_id')->references('id')->on('clinicas')->onDelete('set null');
-            $table->enum('tipo', ['paciente', 'doctor'])->notNull(); // Indica el tipo de persona
+            $table->string('tipo')->notNull(); // Indica el tipo de persona
         });
     }
 

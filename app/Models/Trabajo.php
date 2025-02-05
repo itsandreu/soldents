@@ -16,4 +16,9 @@ class Trabajo extends Model
     {
         return $this->belongsTo(Paciente::class, 'paciente_id');
     }
+
+    public function inventario()
+    {
+        return $this->belongsToMany(Inventario::class, 'inventario_trabajo')->withTimestamps();
+    }
 }

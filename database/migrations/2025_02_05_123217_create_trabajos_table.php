@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre'); // Nombre del trabajo
             $table->text('descripcion'); // Descripción del trabajo
-            $table->foreignId('paciente_id')->unique()->constrained('pacientes')->onDelete('cascade');
+            $table->foreignId('paciente_id')->constrained('pacientes')->onDelete('cascade');
             $table->timestamps();
         });
     }
