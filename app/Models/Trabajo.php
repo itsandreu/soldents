@@ -7,10 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 class Trabajo extends Model
 {
     protected $fillable = [
-        'nombre',
         'descripcion',
-        'paciente_id'
+        'paciente_id',
+        'entrada',
+        'salida',
+        'estado_id',
+        'color_boca',
+        'tipo_trabajo_id'
     ];
+
+    public function estado(){
+        return $this->belongsTo(Estado::class);
+    }
+
+    public function tipoTrabajo(){
+        return $this->belongsTo(TipoTrabajo::class);
+    }
 
     public function paciente()
     {
