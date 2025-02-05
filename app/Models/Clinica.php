@@ -12,4 +12,8 @@ class Clinica extends Model
         'telefono',
         'descripcion'
     ];
+
+    public function persona(){
+        return $this->belongsTo(Persona::class);
+    }
 }
