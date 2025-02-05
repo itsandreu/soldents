@@ -36,6 +36,7 @@ class EstadoResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id'),
                 TextColumn::make('nombre')->badge(),
                 ColorColumn::make('color')
             ])

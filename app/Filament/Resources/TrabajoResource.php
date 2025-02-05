@@ -40,12 +40,11 @@ class TrabajoResource extends Resource
             ->schema([
                 Section::make()
                 ->columns([
-                    'sm' => 4,
-                    'xl' => 4,
-                    '2xl' => 4,
+                    'sm' => 2,
+                    'xl' => 2,
+                    '2xl' => 2,
                 ])->schema([
                     Select::make('tipo_trabajo_id')->options(TipoTrabajo::all()->pluck('nombre','id')),
-                    Textarea::make("descripcion")->label("Descripción")->columnSpan(2),
                     Select::make('paciente_id')
                     ->label('Paciente')
                     ->options(function () {
@@ -53,24 +52,25 @@ class TrabajoResource extends Resource
                             return [$paciente->id => $paciente->persona->nombre];
                         })->toArray();
                     })->searchable()->columnSpan(1),
-                    Select::make('estado_id')->relationship('estado','nombre'),
+                    Textarea::make("descripcion")->label("Descripción")->rows(8)->columnSpan(2),
+                ])->columnSpan(2),
+                Section::make()
+                ->columns([
+                    'sm' => 1,
+                    'xl' => 1,
+                    '2xl' => 1,
+                ])->schema([
+                    DateTimePicker::make('entrada')->columnSpan(1),
+                    DateTimePicker::make('salida')->columnSpan(1),
+                    Select::make('estado_id')->relationship('estado','nombre')->columnSpan(1),
                     Select::make('color_boca')
                     ->options(["A1" =>"A1","A2" =>"A2","A3" =>"A3","A3.5" =>"A3.5","A4" =>"A4",
                                 "B1" =>"B1","B2" =>"B2","B3" =>"B3","B4" =>"B4","C1" =>"C1","C2" =>"C2",
                                 "C3" =>"C3","C4" =>"C4","D1" =>"D1","D2" =>"D2","D3" =>"D3","D4" =>"D4",
                                 "OM1" =>"OM1","OM2" =>"OM2","OM3" =>"OM3",
                     ])->searchable()
-                    ->label("Color")->columnSpan(2),
-                ]),
-                Section::make()
-                ->columns([
-                    'sm' => 4,
-                    'xl' => 4,
-                    '2xl' => 4,
-                ])->schema([
-                    DateTimePicker::make('entrada'),
-                    DateTimePicker::make('salida')
-                ])
+                    ->label("Color")->columnSpan(1),
+                ])->columnSpan(1)
             ])->columns(3);
     }
 
