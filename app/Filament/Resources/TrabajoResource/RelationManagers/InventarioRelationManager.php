@@ -2,7 +2,10 @@
 
 namespace App\Filament\Resources\TrabajoResource\RelationManagers;
 
+use App\Models\Inventario;
+use App\Models\Trabajo;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -40,11 +43,12 @@ class InventarioRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\AttachAction::make()->preloadRecordSelect()->form(fn (Tables\Actions\AttachAction $action): array => [
+                    $action->getRecordSelect()->preload(),
+                ]),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

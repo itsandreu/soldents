@@ -12,6 +12,6 @@ class CreateTrabajo extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return $this->getResource()::getUrl('edit', ['record' => $this->record->getKey()]);
     }
 }

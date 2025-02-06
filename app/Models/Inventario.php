@@ -12,7 +12,7 @@ class Inventario extends Model
         'cantidad',
     ];
 
-    public function trabajo()
+    public function trabajos()
     {
         return $this->belongsToMany(Trabajo::class, 'inventario_trabajo')->withTimestamps();
     }
