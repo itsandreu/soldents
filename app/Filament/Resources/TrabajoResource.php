@@ -34,7 +34,7 @@ class TrabajoResource extends Resource
 {
     protected static ?string $model = Trabajo::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
     protected static ?string $navigationGroup = 'Work';
 
@@ -81,7 +81,7 @@ class TrabajoResource extends Resource
                     'xl' => 3,
                     '2xl' => 3,
                 ])->schema([
-                    CheckboxList::make('piezas')->label("")
+                    CheckboxList::make('piezas')->label("Piezas")
                     ->options([
                         'D1' => 'D1',
                         'D2' => 'D2',
@@ -122,9 +122,9 @@ class TrabajoResource extends Resource
                     }
                 }),
                 TextColumn::make('color_boca')->label('Color'),
+                TextColumn::make('piezas'),
                 TextColumn::make('entrada')->label('Fecha de entrada')->color("warning"),
                 TextColumn::make('salida')->label('Fecha de salida')->color("warning"),
-                TextColumn::make('piezas')
             ])
             ->filters([
                 //

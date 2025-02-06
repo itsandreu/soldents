@@ -21,7 +21,7 @@ class EstadoResource extends Resource
 {
     protected static ?string $model = Estado::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar-square';
 
     protected static ?string $navigationGroup = 'Recursos';
 
