@@ -41,8 +41,8 @@ class PersonaResource extends Resource
                     'paciente' => 'Paciente',
                     'doctorImplantes' => 'Doctor Implantes',
                     'doctorOrtodoncia' => 'Doctor Ortodoncia',
-                    'doctorFija' => 'Doctor Fija',
-                ])
+                    'doctorFijq' => 'Doctor Fija',
+                ])->inline()->columnSpanFull()
             ]);
     }
 

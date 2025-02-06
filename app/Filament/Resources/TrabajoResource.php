@@ -11,7 +11,9 @@ use App\Models\Paciente;
 use App\Models\Persona;
 use App\Models\TipoTrabajo;
 use App\Models\Trabajo;
+use Filament\Actions\Action;
 use Filament\Forms;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Section;
@@ -42,9 +44,9 @@ class TrabajoResource extends Resource
             ->schema([
                 Section::make()
                 ->columns([
-                    'sm' => 2,
-                    'xl' => 2,
-                    '2xl' => 2,
+                    'sm' => 3,
+                    'xl' => 3,
+                    '2xl' => 3,
                 ])->schema([
                     Select::make('tipo_trabajo_id')->options(TipoTrabajo::all()->pluck('nombre','id')),
                     Select::make('paciente_id')
@@ -54,7 +56,14 @@ class TrabajoResource extends Resource
                             return [$paciente->id => $paciente->persona->nombre];
                         })->toArray();
                     })->searchable()->columnSpan(1),
-                    Textarea::make("descripcion")->label("Descripción")->rows(8)->columnSpan(2),
+                    Select::make('color_boca')
+                    ->options(["A1" =>"A1","A2" =>"A2","A3" =>"A3","A3.5" =>"A3.5","A4" =>"A4",
+                                "B1" =>"B1","B2" =>"B2","B3" =>"B3","B4" =>"B4","C1" =>"C1","C2" =>"C2",
+                                "C3" =>"C3","C4" =>"C4","D1" =>"D1","D2" =>"D2","D3" =>"D3","D4" =>"D4",
+                                "OM1" =>"OM1","OM2" =>"OM2","OM3" =>"OM3",
+                    ])->searchable()
+                    ->label("Color")->columnSpan(1),
+                    Textarea::make("descripcion")->label("Descripción")->rows(5)->columnSpan(3),
                 ])->columnSpan(2),
                 Section::make()
                 ->columns([
@@ -65,14 +74,27 @@ class TrabajoResource extends Resource
                     DateTimePicker::make('entrada')->columnSpan(1),
                     DateTimePicker::make('salida')->columnSpan(1),
                     Select::make('estado_id')->relationship('estado','nombre')->columnSpan(1),
-                    Select::make('color_boca')
-                    ->options(["A1" =>"A1","A2" =>"A2","A3" =>"A3","A3.5" =>"A3.5","A4" =>"A4",
-                                "B1" =>"B1","B2" =>"B2","B3" =>"B3","B4" =>"B4","C1" =>"C1","C2" =>"C2",
-                                "C3" =>"C3","C4" =>"C4","D1" =>"D1","D2" =>"D2","D3" =>"D3","D4" =>"D4",
-                                "OM1" =>"OM1","OM2" =>"OM2","OM3" =>"OM3",
-                    ])->searchable()
-                    ->label("Color")->columnSpan(1),
-                ])->columnSpan(1)
+                ])->columnSpan(1),
+                Section::make()
+                ->columns([
+                    'sm' => 3,
+                    'xl' => 3,
+                    '2xl' => 3,
+                ])->schema([
+                    CheckboxList::make('piezas')->label("")
+                    ->options([
+                        'D1' => 'D1',
+                        'D2' => 'D2',
+                        'D3' => 'D3',
+                        'D4' => 'D4',
+                        'D5' => 'D5',
+                        'D6' => 'D6',
+                        'D7' => 'D7',
+                        'D8' => 'D8',
+                        'D9' => 'D9',
+                        'D10' => 'D10',
+                    ])->columns(10)->columnSpanFull()->bulkToggleable()
+                ])
             ])->columns(3);
     }
 
@@ -102,6 +124,7 @@ class TrabajoResource extends Resource
                 TextColumn::make('color_boca')->label('Color'),
                 TextColumn::make('entrada')->label('Fecha de entrada')->color("warning"),
                 TextColumn::make('salida')->label('Fecha de salida')->color("warning"),
+                TextColumn::make('piezas')
             ])
             ->filters([
                 //

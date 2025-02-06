@@ -13,7 +13,12 @@ class Trabajo extends Model
         'salida',
         'estado_id',
         'color_boca',
-        'tipo_trabajo_id'
+        'tipo_trabajo_id',
+        'piezas'
+    ];
+
+    protected $casts = [
+        'piezas' => 'array'
     ];
 
     public function estado(){
