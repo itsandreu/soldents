@@ -18,6 +18,7 @@ use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Split;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -37,6 +38,8 @@ class TrabajoResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
     protected static ?string $navigationGroup = 'Work';
+
+    
 
     public static function form(Form $form): Form
     {
@@ -75,25 +78,64 @@ class TrabajoResource extends Resource
                     DateTimePicker::make('salida')->columnSpan(1),
                     Select::make('estado_id')->relationship('estado','nombre')->columnSpan(1),
                 ])->columnSpan(1),
-                Section::make()
+                Section::make("piezas")->description("Selecciona los dientes de cada cuadrante para este trabajo.")
                 ->columns([
-                    'sm' => 3,
-                    'xl' => 3,
-                    '2xl' => 3,
+                    'sm' => 2,
+                    'xl' => 2,
+                    '2xl' => 2,
                 ])->schema([
-                    CheckboxList::make('piezas')->label("Piezas")
-                    ->options([
-                        'D1' => 'D1',
-                        'D2' => 'D2',
-                        'D3' => 'D3',
-                        'D4' => 'D4',
-                        'D5' => 'D5',
-                        'D6' => 'D6',
-                        'D7' => 'D7',
-                        'D8' => 'D8',
-                        'D9' => 'D9',
-                        'D10' => 'D10',
-                    ])->columns(10)->columnSpanFull()->bulkToggleable()
+                        Section::make([
+                            CheckboxList::make('cuadrante1')->label("Cuadrante 1")
+                            ->options([
+                                '18' => '18',
+                                '17' => '17',
+                                '16' => '16',
+                                '15' => '15',
+                                '14' => '14',
+                                '13' => '13',
+                                '12' => '12',
+                                '11' => '11',
+                            ])->columns(8)->gridDirection('row')
+                        ])->columnSpan(1),
+                        Section::make([
+                            CheckboxList::make('cuadrante2')->label("Cuadrante 2")
+                            ->options([
+                                '21' => '21',
+                                '22' => '22',
+                                '23' => '23',
+                                '24' => '24',
+                                '25' => '25',
+                                '26' => '26',
+                                '27' => '27',
+                                '28' => '28',
+                            ])->columns(8)
+                        ])->columnSpan(1),
+                        Section::make([
+                            CheckboxList::make('cuadrante4')->label("Cuadrante 4")
+                            ->options([
+                                '38' => '38',
+                                '37' => '37',
+                                '36' => '36',
+                                '35' => '35',
+                                '34' => '34',
+                                '33' => '33',
+                                '32' => '32',
+                                '31' => '31',
+                            ])->columns(8)
+                        ])->columnSpan(1),
+                        Section::make([
+                            CheckboxList::make('cuadrante3')->label("Cuadrante 3")
+                            ->options([
+                                '41' => '41',
+                                '42' => '42',
+                                '43' => '43',
+                                '44' => '44',
+                                '45' => '45',
+                                '46' => '46',
+                                '47' => '47',
+                                '48' => '48',
+                            ])->columns(8)
+                        ])->columnSpan(1),
                 ])
             ])->columns(3);
     }
