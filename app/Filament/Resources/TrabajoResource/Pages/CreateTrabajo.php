@@ -19,8 +19,14 @@ class CreateTrabajo extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-       dd( $data);
-        // = auth()->id();
- 
+        $data['piezas'] = array_merge(
+            $data['cuadrante1'] ?? [],
+            $data['cuadrante2'] ?? [],
+            $data['cuadrante3'] ?? [],
+            $data['cuadrante4'] ?? []
+        );
+        unset($data['cuadrante1'], $data['cuadrante2'], $data['cuadrante3'], $data['cuadrante4']);
+    
+        return $data;
     }
 }
