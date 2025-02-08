@@ -28,6 +28,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -53,7 +54,7 @@ class TrabajoResource extends Resource
                         'xl' => 3,
                         '2xl' => 3,
                     ])->schema([
-                        Select::make('tipo_trabajo_id')->options(TipoTrabajo::all()->pluck('nombre', 'id')),
+                        Select::make('tipo_trabajo_id')->options(TipoTrabajo::all()->pluck('nombre', 'id'))->searchable()->preload(),
                         Select::make('paciente_id')
                             ->label('Paciente')
                             ->options(function () {
@@ -137,12 +138,13 @@ class TrabajoResource extends Resource
             ->columns([
                 TextColumn::make('tipoTrabajo.nombre')->badge()->color('success'),
                 TextColumn::make('descripcion')->label('Descripción'),
-                TextColumn::make('paciente_id')->label("Paciente-Clinica")->formatStateUsing(function (String $state) {
+                TextColumn::make('paciente_id')
+                    ->label("Paciente-Clinica")->formatStateUsing(function (String $state) {
                     $paciente = Paciente::where('id', $state)->first();
                     $persona = Persona::where('id', $paciente->persona_id)->first();
                     $clinica = Clinica::where('id', $persona->clinica_id)->first();
                     return $persona->nombre . " - " . $clinica->nombre;
-                }),
+                })->searchable(),
                 TextColumn::make('estado.nombre')->label('Estado')->badge()->color(function ($state) {
                     if ($state == 'Pendiente') {
                         return "red";
@@ -152,20 +154,31 @@ class TrabajoResource extends Resource
                         return "amber";
                     } elseif ($state == 'Fresado') {
                         return "violet";
+                    }elseif ($state == 'Sinterizado') {
+                        return "green";
                     }
                 }),
                 TextColumn::make('color_boca')->label('Color'),
-                TextColumn::make('piezas')->formatStateUsing(function ($state) {
-                    $array = explode(',', $state);
-                    return "Total: " . count($array);
-                })->tooltip(function ($state) {
-                    return implode(', ', $state);
+                TextColumn::make('piezas')->formatStateUsing(function ($state) {$array = explode(',', $state);return "Total: " . count($array);})
+                ->tooltip(function ($state) {
+                    return is_array($state) ? implode(', ', $state) : $state;
                 }),
                 TextColumn::make('entrada')->label('Fecha de entrada')->color("warning"),
                 TextColumn::make('salida')->label('Fecha de salida')->color("warning"),
             ])
             ->filters([
-                //
+                SelectFilter::make('paciente_id')
+                        ->options(function (){
+                            $personas = Persona::pluck('nombre','id')->toArray();
+                            $pacientes = Paciente::pluck('id','persona_id')->toArray();
+                            $opciones = [];
+                            foreach ($pacientes as $nombre_persona_id => $paciente_id) {
+                                if(isset($personas[$nombre_persona_id])){
+                                    $opciones[$paciente_id] = $personas[$nombre_persona_id];
+                                }
+                            }
+                            return $opciones;
+                        })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

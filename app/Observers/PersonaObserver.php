@@ -15,7 +15,7 @@ class PersonaObserver
     {
         if ($persona->tipo ==='paciente') {
             Paciente::create(['persona_id' => $persona->id]);
-        }elseif ($persona->tipo === 'doctor') {
+        }elseif ($persona->tipo === 'doctorImplantes' or $persona->tipo === 'doctorOrtodoncia' or $persona->tipo === 'doctorFija') {
             Doctor::create(['persona_id' => $persona->id]);
         }
     }
@@ -33,8 +33,8 @@ class PersonaObserver
             // Crear el nuevo tipo
             if ($persona->tipo === 'paciente') {
                 Paciente::create(['persona_id' => $persona->id]);
-            } elseif ($persona->tipo === 'doctor') {
-                Doctor::create(['persona_id' => $persona->id,'especialidad' => $persona->especialidad]);
+            } elseif ($persona->tipo === 'doctor' or $persona->tipo === 'doctorOrtodoncia' or $persona->tipo === 'doctorFija') {
+                Doctor::create(['persona_id' => $persona->id]);
             }
         }
     }

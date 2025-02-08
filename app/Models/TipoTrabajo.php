@@ -8,6 +8,7 @@ class TipoTrabajo extends Model
 {
     protected $fillable = [
         'nombre',
+        'trabajo_id'
     ];
 
     public function trabajos(){

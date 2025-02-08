@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TipoTrabajoResource\Pages;
-use App\Filament\Resources\TipoTrabajoResource\RelationManagers;
-use App\Models\TipoTrabajo;
-use App\Models\Trabajo;
+use App\Filament\Resources\FresaResource\Pages;
+use App\Filament\Resources\FresaResource\RelationManagers;
+use App\Models\Fresa;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -17,19 +16,25 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class TipoTrabajoResource extends Resource
+class FresaResource extends Resource
 {
-    protected static ?string $model = TipoTrabajo::class;
+    protected static ?string $model = Fresa::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Recursos';
+    protected static ?string $navigationGroup = 'Inventario';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('nombre')
+                Select::make('tipo')->options([
+                    'Mano' => 'Mano',
+                    'Fresadora' => 'Fresadora'
+                ]),
+                TextInput::make('material')->required(),
+                TextInput::make('marca')->required(),
+                TextInput::make('diametro')->numeric()->required()
             ]);
     }
 
@@ -38,7 +43,10 @@ class TipoTrabajoResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id'),
-                TextColumn::make('nombre')
+                TextColumn::make('tipo'),
+                TextColumn::make('material'),
+                TextColumn::make('marca'),
+                TextColumn::make('diametro')
             ])
             ->filters([
                 //
@@ -63,9 +71,9 @@ class TipoTrabajoResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTipoTrabajos::route('/'),
-            'create' => Pages\CreateTipoTrabajo::route('/create'),
-            'edit' => Pages\EditTipoTrabajo::route('/{record}/edit'),
+            'index' => Pages\ListFresas::route('/'),
+            'create' => Pages\CreateFresa::route('/create'),
+            'edit' => Pages\EditFresa::route('/{record}/edit'),
         ];
     }
 }

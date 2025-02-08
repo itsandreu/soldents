@@ -11,6 +11,11 @@ class EditTrabajo extends EditRecord
 {
     protected static string $resource = TrabajoResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
     protected function getHeaderActions(): array
     {
         return [

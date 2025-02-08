@@ -28,6 +28,12 @@ class ListTrabajos extends ListRecords
             ->modifyQueryUsing(fn (Builder $query) => $query->where('estado_id', 1)),
         'Diseñado' => Tab::make()
             ->modifyQueryUsing(fn (Builder $query) => $query->where('estado_id', 2)),
+        'Fresado' => Tab::make()
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('estado_id', 3)),
+        'Sinterizado' => Tab::make()
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('estado_id', 4)),
+        'Terminado' => Tab::make()
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('estado_id', 5)),
     ];
 }
 }

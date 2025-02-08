@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Inventario extends Model
 {
@@ -10,8 +11,14 @@ class Inventario extends Model
         'nombre',
         'descripcion',
         'cantidad',
+        'inventariable_type',
+        'inventariable_id'
     ];
 
+    public function inventariable(): MorphTo {
+        return $this->morphTo();
+    }
+    
     public function trabajos()
     {
         return $this->belongsToMany(Trabajo::class, 'inventario_trabajo')->withTimestamps();

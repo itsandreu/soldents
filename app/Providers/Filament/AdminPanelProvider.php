@@ -36,7 +36,7 @@ class AdminPanelProvider extends PanelProvider
                 'red' => Color::Red,
                 'sky' => Color::Sky,
                 'violet' => Color::Violet,
-
+                'green' => Color::Green
             ])
             ->sidebarCollapsibleOnDesktop()
             ->collapsibleNavigationGroups(true)

@@ -12,6 +12,7 @@ class Persona extends Model
         'apellidos',
         'telefono',
         'tipo',
+        'nota'
     ];
 
 
