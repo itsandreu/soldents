@@ -141,7 +141,15 @@ svg.fi-sidebar-group-icon {
     text-align: center; /* Centra el texto horizontalmente dentro del span */
 }
 
-.fi-section-content-ctn{
+/* .fi-section-content-ctn{
     border-radius:10px;
     background-color: #a4c3b2;
+} */
+
+.fc-event {
+    white-space: normal !important; /* Permite que el texto tenga varias líneas */
+    height: auto !important; /* Ajusta la altura automáticamente */
+    min-height: 40px; /* Asegura un mínimo de altura */
+    padding: 5px; /* Añade espacio interno para que el texto no esté muy pegado */
+    line-height: 1.2; /* Ajusta la altura de línea */
 }
