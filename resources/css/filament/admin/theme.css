@@ -1,0 +1,91 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+.fi-sidebar-item-active > a { 
+    background-color: #D0D6B5;
+ 
+    & > svg, span, .fi-sidebar-item-icon {
+        @apply text-black;
+    }
+ 
+    &:hover {
+       
+
+        & > .fi-sidebar-item-icon {
+            @apply text-black;
+        }
+    }
+} 
+
+.fi-sidebar-nav {
+    @apply bg-purple-950;
+}
+
+.fi-sidebar-item {
+    @apply text-black;
+}
+
+.fi-sidebar-item-icon {
+    @apply text-black;
+}
+nav.flex {
+    background-color: #a4c3b2;
+}
+
+.fi-sidebar-header {
+    background-color: #a4c3b2;
+}
+div.fi-layout{
+    background-color: #cce3de;
+}
+
+
+
+.fi-ta-row:hover {
+    background-color: #ecf4f2; /* Color cuando el cursor esté encima */
+}
+
+
+.fi-btn{
+    background-color: #99cc94;
+    color: rgb(60, 60, 60);
+}
+
+.fi-btn:hover{
+    @apply text-white;
+    background-color: #5a9676;
+}
+
+
+.fi-tabs-item .fi-tabs-item-label {
+    color: #000000; /* Negro para el texto */
+}
+.fi-tabs-item:hover{
+    background-color: #D0D6B5;
+}
+.fi-tabs-item.fi-active {
+    background-color: #D0D6B5; /* Cambia el color de fondo del botón activo */
+}
+
+
+.fi-ta-header-toolbar{
+background-color: #ecf4f2;
+}
+.fi-pagination{
+    background-color: #ecf4f2;
+}
+
+th.fi-ta-header-cell {
+background-color: #ecf4f2;
+}
+th.fi-ta-actions-header-cell{
+    background-color: #ecf4f2;
+}
+
+th.fi-ta-cell{
+    background-color: #ecf4f2;
+}
+.fi-sidebar-item .fi-badge {
+    @apply bg-success-100; /* Cambia el color de fondo solo a este elemento */
+}
