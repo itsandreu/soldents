@@ -137,7 +137,7 @@ class TrabajoResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('tipoTrabajo.nombre')->badge()->color('success')->searchable(),
-                TextColumn::make('descripcion')->label('Descripción'),
+                TextColumn::make('descripcion')->wrap()->label('Descripción'),
                 TextColumn::make('paciente_id')
                     ->label("Paciente-Clinica")->formatStateUsing(function (String $state) {
                     $paciente = Paciente::where('id', $state)->first();

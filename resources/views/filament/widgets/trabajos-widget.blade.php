@@ -1,7 +1,9 @@
 @php
 use App\Models\Paciente;
 use App\Models\Persona;
+use Illuminate\Support\Str;
 @endphp
+
 <x-filament-widgets::widget>
     <x-filament::section>
         <div class="p-4 bg-white rounded-lg shadow-md">
@@ -10,14 +12,14 @@ use App\Models\Persona;
             <!-- Muestra los trabajos -->
             <ul class="mt-4">
                 @foreach ($trabajos as $trabajo)
-                    <li class="flex items-center justify-between py-2 border-b">
-                        <span class="text-gray-700 font-medium">{{ $trabajo->descripcion }}</span>
-                        <span class="text-sm text-gray-500">{{ $trabajo->created_at->format('d-m-Y') }}</span>  <!-- Muestra la fecha de creación -->
+                    @php
+                        $paciente = Paciente::where('id', $trabajo->paciente_id)->first();
+                        $persona = Persona::where('id', $paciente->persona_id)->first();
+                    @endphp
+                    <li class="grid grid-cols-4 gap-4 py-2 border-b">
+                        <span class="text-gray-700 font-medium truncate">{{ Str::limit($trabajo->descripcion, 100, '...') }}</span>
+                        <span class="text-sm text-gray-500">{{ $trabajo->created_at->format('d-m-Y') }}</span>
                         <span class="text-sm text-gray-500">{{ $trabajo->color_boca }}</span>
-                        @php
-                            $paciente = Paciente::where('id',$trabajo->paciente_id)->first();
-                            $persona = Persona::where('id',$paciente->persona_id)->first();
-                        @endphp
                         <span class="text-sm text-gray-500">{{ $persona->nombre }}</span>
                     </li>
                 @endforeach

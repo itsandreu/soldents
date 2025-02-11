@@ -140,3 +140,8 @@ svg.fi-sidebar-group-icon {
     flex: 1; /* Esto hace que el texto ocupe el espacio disponible */
     text-align: center; /* Centra el texto horizontalmente dentro del span */
 }
+
+.fi-section-content-ctn{
+    border-radius:10px;
+    background-color: #a4c3b2;
+}
