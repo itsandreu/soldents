@@ -23,6 +23,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -77,6 +78,25 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->sidebarWidth('15rem')->spa();
+            ->sidebarWidth('15rem')->plugin(
+                FilamentFullCalendarPlugin::make()
+                ->schedulerLicenseKey(false)
+                ->selectable()
+                ->editable()
+                ->timezone(config('app.timezone')) // Configura la zona horaria de la aplicación
+                ->locale(app()->getLocale()) // Establece el idioma de la aplicación
+                ->plugins(['dayGrid', 'timeGrid', 'interaction']) // Habilita los plugins necesarios
+                ->config([
+                    'initialView' => 'dayGridMonth', // Vista predeterminada del calendario
+                    'headerToolbar' => [
+                        'left' => 'prev,next today',
+                        'center' => 'title',
+                        'right' => 'dayGridMonth,timeGridWeek,timeGridDay'
+                    ],
+                    'selectOverlap' => false,
+                    'editable' => true,
+                    'eventLimit' => true, // Carga eventos desde una API o ruta
+                ])
+            );
     }
 }
