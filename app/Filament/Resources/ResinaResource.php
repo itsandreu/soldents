@@ -22,7 +22,7 @@ class ResinaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Inventario';
+    protected static ?string $navigationGroup = 'Recursos';
 
     public static function form(Form $form): Form
     {
