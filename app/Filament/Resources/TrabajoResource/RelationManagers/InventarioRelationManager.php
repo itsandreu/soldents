@@ -18,6 +18,7 @@ class InventarioRelationManager extends RelationManager
 {
     protected static string $relationship = 'inventario';
 
+
     public function form(Form $form): Form
     {
         return $form
@@ -32,8 +33,7 @@ class InventarioRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
-        return $table
-            ->recordTitleAttribute('nombre')
+        return $table->description("Inventario utilizado en este trabajo")
             ->columns([
                 Tables\Columns\TextColumn::make('nombre'),
                 Tables\Columns\TextColumn::make('descripcion'),

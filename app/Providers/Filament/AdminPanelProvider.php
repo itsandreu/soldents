@@ -50,8 +50,7 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-cloud'),
                 NavigationGroup::make()
                     ->label('Recursos')
-                    ->icon('heroicon-o-cog-8-tooth'),
-
+                    ->icon('heroicon-o-cog-8-tooth')->collapsed(),
             ])->darkMode(false)
             ->sidebarCollapsibleOnDesktop()
             ->collapsibleNavigationGroups(true)
