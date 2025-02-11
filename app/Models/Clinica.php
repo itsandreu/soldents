@@ -14,6 +14,6 @@ class Clinica extends Model
     ];
 
     public function persona(){
-        return $this->belongsTo(Persona::class);
+        return $this->hasMany(Persona::class);
     }
 }

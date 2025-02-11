@@ -31,7 +31,7 @@ class ResinaResource extends Resource
                 Select::make('tipo')
                     ->options([
                         'Modelos' => 'Modelos',
-                        'Fédulas' => 'Fédulas',
+                        'Férulas' => 'Férulas',
                         'Encías' => 'Encías'
                     ]),
                 TextInput::make('marca')->required(),

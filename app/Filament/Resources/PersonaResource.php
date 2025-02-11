@@ -30,6 +30,7 @@ class PersonaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationGroup = 'Work';
 
 
@@ -49,7 +50,7 @@ class PersonaResource extends Resource
                     'doctorFija' => 'Doctor Fija',
                 ])->inline()->columnSpanFull(),
                 MarkdownEditor::make('nota')->columnSpanFull()
-            ]);
+            ])->mutate;
     }
 
     public static function table(Table $table): Table
@@ -88,7 +89,7 @@ class PersonaResource extends Resource
 
     public static function getRelations(): array
     {
-        return [DoctorRelationManager::class,PacienteRelationManager::class];
+        return [];
     }
 
     public static function getPages(): array

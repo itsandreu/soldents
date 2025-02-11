@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClinicaResource\Pages;
 use App\Filament\Resources\ClinicaResource\RelationManagers;
+use App\Filament\Resources\ClinicaResource\RelationManagers\PersonaRelationManager;
 use App\Models\Clinica;
 use Filament\Forms;
 use Filament\Forms\Components\Textarea;
@@ -62,7 +63,7 @@ class ClinicaResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+           PersonaRelationManager::class
         ];
     }
 
