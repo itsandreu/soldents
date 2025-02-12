@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Clusters\Inventario as ClustersInventario;
 use App\Filament\Resources\InventarioResource\Pages;
 use App\Filament\Resources\InventarioResource\RelationManagers;
 use App\Models\Disco;
@@ -10,6 +11,7 @@ use App\Models\Inventario;
 use App\Models\Resina;
 use Filament\Forms;
 use Filament\Forms\Components\MorphToSelect;
+use Filament\Forms\Components\MorphToSelect\Type;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -21,9 +23,13 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Reactive;
@@ -34,9 +40,11 @@ class InventarioResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
 
-    protected static ?string $navigationGroup = 'Inventario';
+    protected static ?string $navigationLabel = "Stock";
 
-    protected static ?string $title = 'Inventario';
+    protected static ?string $Title = "Inventario";
+
+    protected static ?string $cluster = ClustersInventario::class;
 
     public static function form(Form $form): Form
     {
@@ -93,52 +101,59 @@ class InventarioResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('Image')
-                ->label('foto')
-                ->defaultImageUrl(
-                    function($record){
-                        if ($record->inventariable_type == "App\Models\Fresa") 
-                        {
-                            return asset('storage/fresa.png');
-                        }
-                        elseif ($record->inventariable_type == "App\Models\Disco") 
-                        {
-                            return asset('storage/disco.png');
-                        }
-                        elseif($record->inventariable_type == "App\Models\Resina") 
-                        {
-                            return asset('storage/resina.png');
-                        } 
-                    })
-                ->disk('public')
-                ->square()->size(120),
-                TextColumn::make('nombre')->badge()->color('violet')->description(fn (Inventario $record) => new HtmlString(
-                    !$record || !$record->inventariable ? 'No hay información adicional disponible' : (
-                        $record->inventariable instanceof Fresa ? "<table style='border-collapse: collapse; width: 100%; text-align: left;'>
-                            <tr><td style=' padding: 1px; text-align: right;'><b>Tipo: </b></td><td style=' padding: 1px;text-align: left;'>{$record->inventariable->tipo}</td></tr>
-                            <tr><td style=' padding: 1px; text-align: right;'><b>Material: </b></td><td style=' padding: 1px;text-align: left;'>{$record->inventariable->material}</td></tr>
-                            <tr><td style=' padding: 1px; text-align: right;'><b>Marca: </b></td><td style=' padding: 1px;text-align: left;'>{$record->inventariable->marca}</td></tr>
-                            <tr><td style=' padding: 1px; text-align: right;'><b>Diámetro: </b></td><td style=' padding: 1px;text-align: left;'>{$record->inventariable->diametro}</td></tr>
-                        </table>" : (
-                        $record->inventariable instanceof Disco ? "<table style='border-collapse: collapse; width: 100%; text-align: left;'>
-                            <tr><td style=' padding: 1px;text-align: right;'><b>Material: </b></td><td style=' padding: 1px;'>{$record->inventariable->material}</td></tr>
-                            <tr><td style=' padding: 1px;text-align: right;'><b>Marca: </b></td><td style=' padding: 1px;'>{$record->inventariable->marca}</td></tr>
-                            <tr><td style=' padding: 1px;text-align: right;'><b>Color: </b></td><td style=' padding: 1px;'>{$record->inventariable->color}</td></tr>
-                            <tr><td style=' padding: 1px;text-align: right;'><b>Translucidez: </b></td><td style=' padding: 1px;'>{$record->inventariable->translucidez}</td></tr>
-                            <tr><td style=' padding: 1px;text-align: right;'><b>Dimensiones: </b></td><td style=' padding: 1px;'>{$record->inventariable->dimensiones}</td></tr>
-                            <tr><td style=' padding: 1px;text-align: right;'><b>Reducción: </b></td><td style=' padding: 1px;'>{$record->inventariable->reduccion}</td></tr>
-                            <tr><td style=' padding: 1px;text-align: right;'><b>Lote: </b></td><td style=' padding: 1px;'>{$record->inventariable->lote}</td></tr>
-                        </table>" : (
-                        $record->inventariable instanceof Resina ? "<table style='border-collapse: collapse; width: 100%; text-align: left;'>
-                            <tr><td style=' padding: 1px;text-align: right;'><b>Tipo: </b></td><td style=' padding: 1px;'>{$record->inventariable->tipo}</td></tr>
-                            <tr><td style=' padding: 1px;text-align: right;'><b>Marca: </b></td><td style=' padding: 1px;'>{$record->inventariable->marca}</td></tr>
-                            <tr><td style=' padding: 1px;text-align: right;'><b>Litros: </b></td><td style=' padding: 1px;'>{$record->inventariable->litros}</td></tr>
-                            <tr><td style=' padding: 1px;text-align: right;'><b>Lote: </b></td><td style=' padding: 1px;'>{$record->inventariable->lote}</td></tr>
-                        </table>" : ''
-                    )))
-                ))->wrap()->html(),
-                TextColumn::make('cantidad')->badge()->color('violet'),
-                TextColumn::make('descripcion'),
+                Stack::make([
+                    ImageColumn::make('Image')
+                    ->label('foto')
+                    ->defaultImageUrl(
+                        function($record){
+                            if ($record->inventariable_type == "App\Models\Fresa") 
+                            {
+                                return asset('storage/fresa.png');
+                            }
+                            elseif ($record->inventariable_type == "App\Models\Disco") 
+                            {
+                                return asset('storage/disco.png');
+                            }
+                            elseif($record->inventariable_type == "App\Models\Resina") 
+                            {
+                                return asset('storage/resina.png');
+                            } 
+                        })
+                    ->disk('public')
+                    ->square()->size(120)->alignCenter()->tooltip(function(Model $record){
+
+                        return $record->descripcion;
+                    }),
+                    TextColumn::make('nombre')->badge()->color('violet')->description(fn (Inventario $record) => new HtmlString(
+                        !$record || !$record->inventariable ? 'No hay información adicional disponible' : (
+                            $record->inventariable instanceof Fresa ? "<table style='border-collapse: collapse; width: 50%; text-align: left;'>
+                                <tr><td style=' padding: 1px; '><b>Tipo: </b></td><td style=' padding: 1px;text-align: left;'>{$record->inventariable->tipo}</td></tr>
+                                <tr><td style=' padding: 1px; '><b>Material: </b></td><td style=' padding: 1px;text-align: left;'>{$record->inventariable->material}</td></tr>
+                                <tr><td style=' padding: 1px; '><b>Marca: </b></td><td style=' padding: 1px;text-align: left;'>{$record->inventariable->marca}</td></tr>
+                                <tr><td style=' padding: 1px; '><b>Diámetro: </b></td><td style=' padding: 1px;text-align: left;'>{$record->inventariable->diametro}</td></tr>
+                            </table>" : (
+                            $record->inventariable instanceof Disco ? "<table style='border-collapse: collapse; width: 50%; text-align: left;'>
+                                <tr><td style=' padding: 1px;'><b>Material: </b></td><td style=' padding: 1px;'>{$record->inventariable->material}</td></tr>
+                                <tr><td style=' padding: 1px;'><b>Marca: </b></td><td style=' padding: 1px;'>{$record->inventariable->marca}</td></tr>
+                                <tr><td style=' padding: 1px;'><b>Color: </b></td><td style=' padding: 1px;'>{$record->inventariable->color}</td></tr>
+                                <tr><td style=' padding: 1px;'><b>Translucidez: </b></td><td style=' padding: 1px;'>{$record->inventariable->translucidez}</td></tr>
+                                <tr><td style=' padding: 1px;'><b>Dimensiones: </b></td><td style=' padding: 1px;'>{$record->inventariable->dimensiones}</td></tr>
+                                <tr><td style=' padding: 1px;'><b>Reducción: </b></td><td style=' padding: 1px;'>{$record->inventariable->reduccion}</td></tr>
+                                <tr><td style=' padding: 1px;'><b>Lote: </b></td><td style=' padding: 1px;'>{$record->inventariable->lote}</td></tr>
+                            </table>" : (
+                            $record->inventariable instanceof Resina ? "<table style='border-collapse: collapse; width: 50%; text-align: left;'>
+                                <tr><td style=' padding: 1px;'><b>Tipo: </b></td><td style=' padding: 1px;'>{$record->inventariable->tipo}</td></tr>
+                                <tr><td style=' padding: 1px;'><b>Marca: </b></td><td style=' padding: 1px;'>{$record->inventariable->marca}</td></tr>
+                                <tr><td style=' padding: 1px;'><b>Litros: </b></td><td style=' padding: 1px;'>{$record->inventariable->litros}</td></tr>
+                                <tr><td style=' padding: 1px;'><b>Lote: </b></td><td style=' padding: 1px;'>{$record->inventariable->lote}</td></tr>
+                            </table>" : ''
+                        )))
+                    ))->wrap()->html()->alignCenter(),
+                    TextColumn::make('cantidad')->formatStateUsing(function($state){
+                        return "Cantidad -> " .$state; 
+                    })->badge()->color('violet')->alignCenter(),
+                    TextColumn::make('descripcion'),
+                ]),
 
                 // TextColumn::make('inventariable_type')->label('Tipo')->formatStateUsing(function($record){
                 //     return class_basename($record->inventariable_type);
@@ -156,17 +171,20 @@ class InventarioResource extends Resource
                 //         return class_basename($record->inventariable_type) . ": " . $valor->tipo;
                 //     }
                 // })
+            ])->contentGrid([
+                'md' => 3,
+                'xl' => 5,
             ])
             ->filters([
-                //
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

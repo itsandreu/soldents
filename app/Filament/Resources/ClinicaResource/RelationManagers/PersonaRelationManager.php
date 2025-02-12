@@ -76,7 +76,7 @@ class PersonaRelationManager extends RelationManager
                 
             })->groups([
                 'tipo',
-            ])->defaultGroup('tipo')
+            ])->defaultGroup('tipo')->modelLabel('Hola')
             ->recordTitleAttribute('nombre')
             ->columns([
                 Tables\Columns\TextColumn::make('nombre')->searchable(),

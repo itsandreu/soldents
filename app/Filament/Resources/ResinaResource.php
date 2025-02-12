@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Clusters\Inventario;
 use App\Filament\Resources\ResinaResource\Pages;
 use App\Filament\Resources\ResinaResource\RelationManagers;
 use App\Models\Resina;
@@ -20,9 +21,11 @@ class ResinaResource extends Resource
 {
     protected static ?string $model = Resina::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-lifebuoy';
 
     protected static ?string $navigationGroup = 'Recursos';
+
+    protected static ?string $cluster = Inventario::class;
 
     public static function form(Form $form): Form
     {

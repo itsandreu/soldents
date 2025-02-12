@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Clusters\Inventario;
 use App\Filament\Resources\FresaResource\Pages;
 use App\Filament\Resources\FresaResource\RelationManagers;
 use App\Models\Fresa;
@@ -20,9 +21,11 @@ class FresaResource extends Resource
 {
     protected static ?string $model = Fresa::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-stop';
 
     protected static ?string $navigationGroup = 'Recursos';
+
+    protected static ?string $cluster = Inventario::class;
 
     public static function form(Form $form): Form
     {

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Clusters\Inventario;
 use App\Filament\Resources\DiscoResource\Pages;
 use App\Filament\Resources\DiscoResource\RelationManagers;
 use App\Models\Disco;
@@ -19,9 +20,11 @@ class DiscoResource extends Resource
 {
     protected static ?string $model = Disco::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
 
     protected static ?string $navigationGroup = 'Recursos';
+
+    protected static ?string $cluster = Inventario::class;
 
     public static function form(Form $form): Form
     {

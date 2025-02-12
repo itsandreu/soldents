@@ -54,7 +54,7 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Inventario')
                     ->icon('heroicon-o-cloud'),
                 NavigationGroup::make()
-                    ->label('Recursos')
+                    ->label('Ajustes')
                     ->icon('heroicon-o-cog-8-tooth')->collapsed(),
             ])
             ->darkMode(false)
@@ -65,6 +65,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 
             ])
+            ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 trabajosWidget::class
@@ -79,7 +80,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-            ])->breadcrumbs(false)
+            ])->breadcrumbs(true)
             ->authMiddleware([
                 Authenticate::class,
             ])
