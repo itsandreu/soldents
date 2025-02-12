@@ -168,16 +168,22 @@ class TrabajoResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('paciente_id')
-                        ->options(function (){
-                            $personas = Persona::pluck('nombre','id')->toArray();
-                            $pacientes = Paciente::pluck('id','persona_id')->toArray();
-                            $opciones = [];
-                            foreach ($pacientes as $nombre_persona_id => $paciente_id) {
-                                if(isset($personas[$nombre_persona_id])){
-                                    $opciones[$paciente_id] = $personas[$nombre_persona_id];
-                                }
-                            }
-                            return $opciones;
+                ->options(function () {
+                    $personas = Persona::select('id', 'nombre', 'apellidos')
+                        ->get()
+                        ->mapWithKeys(fn($persona) => [$persona->id => "{$persona->nombre} {$persona->apellidos}"])
+                        ->toArray();
+            
+                    $pacientes = Paciente::pluck('id', 'persona_id')->toArray();
+            
+                    $opciones = [];
+                    foreach ($pacientes as $persona_id => $paciente_id) {
+                        if (isset($personas[$persona_id])) {
+                            $opciones[$paciente_id] = $personas[$persona_id];
+                        }
+                    }
+            
+                    return $opciones;
                         })
             ])
             ->actions([
@@ -213,7 +219,7 @@ class TrabajoResource extends Resource
     }
 
     public static function getNavigationBadgeColor(): ?string
-{
-     return "warning";
-}
+    {   
+    return "warning";
+    }
 }

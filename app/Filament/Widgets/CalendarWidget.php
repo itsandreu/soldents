@@ -21,7 +21,10 @@ use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 
 class CalendarWidget extends FullCalendarWidget
 {
+
     public Model | string | null $model = Trabajo::class;
+
+    protected int | string | array $columnSpan = '5';
 
     protected function headerActions(): array
     {
@@ -46,11 +49,12 @@ class CalendarWidget extends FullCalendarWidget
                     'end' => $event->salida,
                     'url' => TrabajoResource::getUrl(name: 'edit', parameters: ['record' => $event]),
                     'shouldOpenUrlInNewTab' => true,
-                    'backgroundColor' => $event->color_boca ?? '#3788d8',
+                    'backgroundColor' =>'#3788d8',
                 ];
             })
             ->all();
     }
+
 
     public function config(): array
     {
@@ -63,6 +67,8 @@ class CalendarWidget extends FullCalendarWidget
             ],
         ];
     }
+
+
 
     
 }

@@ -8,6 +8,7 @@ class Paciente extends Model
 {
     protected $fillable = [
         'persona_id',
+        'foto_boca',
     ];
     public function persona()
     {

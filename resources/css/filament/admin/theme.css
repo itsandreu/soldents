@@ -153,3 +153,7 @@ svg.fi-sidebar-group-icon {
     padding: 5px; /* Añade espacio interno para que el texto no esté muy pegado */
     line-height: 1.2; /* Ajusta la altura de línea */
 }
+.fc-event-title {
+    @apply text-xs; /* Reduce el tamaño del texto */
+}
+

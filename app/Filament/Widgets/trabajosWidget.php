@@ -8,6 +8,8 @@ use App\Models\Trabajo;
 class trabajosWidget extends Widget
 {
     protected static string $view = 'filament.widgets.trabajos-widget';
+
+    protected int | string | array $columnSpan = '3';
     public function render(): \Illuminate\View\View
     {
         // Obtén los trabajos, puedes personalizar esta consulta según lo que necesites

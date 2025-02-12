@@ -7,11 +7,13 @@ use App\Filament\Resources\ClinicaResource\RelationManagers;
 use App\Filament\Resources\ClinicaResource\RelationManagers\PersonaRelationManager;
 use App\Models\Clinica;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -29,10 +31,13 @@ class ClinicaResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('nombre')->label("Nombre"),
-                TextInput::make('direccion')->label("Dirección"),
-                TextInput::make('telefono')->label("Número de teléfono"),
-                Textarea::make("descripcion")->label("Descripción")
+                Section::make('Datos')
+                    ->schema([
+                        TextInput::make('nombre')->label("Nombre"),
+                        TextInput::make('direccion')->label("Dirección"),
+                        TextInput::make('telefono')->label("Número de teléfono"),
+                        Textarea::make("descripcion")->label("Descripción")->columnSpanFull()
+                    ])->columns(3)
             ]);
     }
 
@@ -40,12 +45,16 @@ class ClinicaResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
-                TextColumn::make('nombre')->badge()->color("success"),
-                TextColumn::make('direccion'),
-                TextColumn::make('telefono'),
-                TextColumn::make('descripcion')->limit(30),
-                TextColumn::make('created_at')->color("warning"),
+                Stack::make([
+                    TextColumn::make('nombre')->size(20)->alignCenter()->size(10),
+                    TextColumn::make('direccion')->icon("heroicon-s-map")->alignLeft()->iconColor('success'),
+                    TextColumn::make('telefono')->icon("heroicon-s-phone")->alignLeft()->iconColor('danger'),
+                    TextColumn::make('descripcion')->icon("heroicon-s-pencil")->alignLeft()->limit(30)->iconColor('sky'),
+                    TextColumn::make('created_at')->icon("heroicon-s-calendar")->alignLeft()->color("violet")->iconColor('violet')
+                ])
+            ])->contentGrid([
+                'md' => 4,
+                'xl' => 6,
             ])
             ->filters([
                 //
@@ -54,16 +63,16 @@ class ClinicaResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-           PersonaRelationManager::class
+            PersonaRelationManager::class
         ];
     }
 
@@ -75,4 +84,7 @@ class ClinicaResource extends Resource
             'edit' => Pages\EditClinica::route('/{record}/edit'),
         ];
     }
+
+    
+
 }

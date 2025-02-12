@@ -15,6 +15,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Widgets;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -41,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
                 'violet' => Color::Violet,
                 'green' => Color::Green
             ])->viteTheme('resources/css/filament/admin/theme.css')
+            ->maxContentWidth(MaxWidth::Full)
             ->navigationGroups([
                 NavigationGroup::make()
                      ->label('Work')

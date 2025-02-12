@@ -50,7 +50,7 @@ class PersonaResource extends Resource
                     'doctorFija' => 'Doctor Fija',
                 ])->inline()->columnSpanFull(),
                 MarkdownEditor::make('nota')->columnSpanFull()
-            ])->mutate;
+            ]);
     }
 
     public static function table(Table $table): Table

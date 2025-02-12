@@ -7,20 +7,23 @@ use Illuminate\Support\Str;
 <x-filament-widgets::widget>
     <x-filament::section>
         <div class="p-4 bg-white rounded-lg shadow-md">
-            <h3 class="text-xl font-semibold">Trabajos Recientes</h3>
+            <h3 class="text-xl font-semibold">Proximos Trabajos</h3>
             
-            <!-- Muestra los trabajos -->
+            <!-- Muestra los trabajos ordenados por fecha de salida -->
             <ul class="mt-4">
-                @foreach ($trabajos as $trabajo)
+                @foreach ($trabajos->sortBy('salida') as $trabajo)
                     @php
-                        $paciente = Paciente::where('id', $trabajo->paciente_id)->first();
-                        $persona = Persona::where('id', $paciente->persona_id)->first();
+                        $paciente = Paciente::find($trabajo->paciente_id);
+                        $persona = $paciente ? Persona::find($paciente->persona_id) : null;
                     @endphp
-                    <li class="grid grid-cols-4 gap-4 py-2 border-b">
-                        <span class="text-gray-700 font-medium truncate">{{ Str::limit($trabajo->descripcion, 100, '...') }}</span>
-                        <span class="text-sm text-gray-500">{{ $trabajo->created_at->format('d-m-Y') }}</span>
-                        <span class="text-sm text-gray-500">{{ $trabajo->color_boca }}</span>
-                        <span class="text-sm text-gray-500">{{ $persona->nombre }}</span>
+                    <li>
+                        <a href="{{ route('filament.admin.resources.trabajos.edit', $trabajo->id) }}" 
+                            class="grid grid-cols-4 gap-4 py-2 border-b hover:bg-gray-100 transition rounded-md px-2">
+                            <span class="text-gray-700 font-small truncate ">{{ Str::limit($trabajo->descripcion, 120, '...') }}</span>
+                            <span class="text-sm text-gray-500">{{ $trabajo->salida }}</span>
+                            <span class="text-sm text-gray-500">{{ $trabajo->color_boca }}</span>
+                            <span class="text-sm text-gray-500">{{ $persona ? $persona->nombre : 'Sin paciente' }}</span>
+                        </a>
                     </li>
                 @endforeach
             </ul>
