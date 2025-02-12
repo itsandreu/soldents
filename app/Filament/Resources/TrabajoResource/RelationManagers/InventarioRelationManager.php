@@ -43,9 +43,10 @@ class InventarioRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make()->label("Añadir")->preloadRecordSelect()
+                Tables\Actions\AttachAction::make()->recordTitleAttribute('nombre')->label("Añadir")->preloadRecordSelect()
                                                     ->form(fn (Tables\Actions\AttachAction $action): array => [
                                                     $action->getRecordSelect()->preload(),
+
                 ]),
             ])
             ->actions([

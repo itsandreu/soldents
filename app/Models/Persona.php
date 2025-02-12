@@ -16,7 +16,6 @@ class Persona extends Model
         'foto_boca'
     ];
 
-
     public function clinica()
     {
         return $this->belongsTo(Clinica::class);

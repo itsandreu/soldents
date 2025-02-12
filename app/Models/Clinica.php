@@ -10,7 +10,8 @@ class Clinica extends Model
         'nombre',
         'direccion',
         'telefono',
-        'descripcion'
+        'descripcion',
+        'foto'
     ];
 
     public function persona(){

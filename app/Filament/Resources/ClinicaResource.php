@@ -7,12 +7,14 @@ use App\Filament\Resources\ClinicaResource\RelationManagers;
 use App\Filament\Resources\ClinicaResource\RelationManagers\PersonaRelationManager;
 use App\Models\Clinica;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -33,11 +35,25 @@ class ClinicaResource extends Resource
             ->schema([
                 Section::make('Datos')
                     ->schema([
-                        TextInput::make('nombre')->label("Nombre"),
-                        TextInput::make('direccion')->label("Dirección"),
-                        TextInput::make('telefono')->label("Número de teléfono"),
-                        Textarea::make("descripcion")->label("Descripción")->columnSpanFull()
-                    ])->columns(3)
+                        Section::make()->schema([
+                            TextInput::make('nombre')->label("Nombre")->columnSpan(1),
+                            TextInput::make('direccion')->label("Dirección")->columnSpan(1),
+                            TextInput::make('telefono')->label("Número de teléfono")->columnSpan(1),
+                            Textarea::make("descripcion")->label("Descripción")->columnSpan(1),
+                        ])->columnSpan(1),
+                        Section::make()->schema([
+                            FileUpload::make('foto')
+                            ->disk('public')
+                            ->directory('clinicas')
+                            ->image()
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                '16:9',
+                                '4:3',
+                                '1:1',
+                            ])
+                        ])->columnSpan(1)
+                    ])->columns(2)
             ]);
     }
 
@@ -46,15 +62,16 @@ class ClinicaResource extends Resource
         return $table
             ->columns([
                 Stack::make([
-                    TextColumn::make('nombre')->size(20)->alignCenter()->size(10),
-                    TextColumn::make('direccion')->icon("heroicon-s-map")->alignLeft()->iconColor('success'),
-                    TextColumn::make('telefono')->icon("heroicon-s-phone")->alignLeft()->iconColor('danger'),
-                    TextColumn::make('descripcion')->icon("heroicon-s-pencil")->alignLeft()->limit(30)->iconColor('sky'),
-                    TextColumn::make('created_at')->icon("heroicon-s-calendar")->alignLeft()->color("violet")->iconColor('violet')
+                    ImageColumn::make('foto')->circular()->height(180)->alignCenter()->default(asset("storage/sinfoto.png")),
+                    TextColumn::make('nombre')->size(20)->alignCenter()->weight('black')->size(10),
+                    TextColumn::make('direccion')->icon("heroicon-s-map")->weight('semibold')->alignLeft()->iconColor('success'),
+                    TextColumn::make('telefono')->icon("heroicon-s-phone")->weight('black')->alignLeft()->iconColor('danger'),
+                    TextColumn::make('descripcion')->icon("heroicon-s-pencil")->alignLeft()->limit(30)->iconColor('sky')->color('description'),
+                    TextColumn::make('created_at')->icon("heroicon-s-calendar")->alignLeft()->color("violet")->iconColor('violet')->weight('bold')->sinceTooltip()
                 ])
             ])->contentGrid([
-                'md' => 4,
-                'xl' => 6,
+                'md' => 3,
+                'xl' => 5,
             ])
             ->filters([
                 //

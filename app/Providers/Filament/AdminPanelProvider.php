@@ -40,7 +40,10 @@ class AdminPanelProvider extends PanelProvider
                 'red' => Color::Red,
                 'sky' => Color::Sky,
                 'violet' => Color::Violet,
-                'green' => Color::Green
+                'green' => Color::Green,
+                'black' => Color::hex('#001219'),
+                'aqua' => Color::hex('#00a896'),
+                'description' => Color::hex('#6c757d')
             ])->viteTheme('resources/css/filament/admin/theme.css')
             ->maxContentWidth(MaxWidth::Full)
             ->navigationGroups([
@@ -53,7 +56,8 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label('Recursos')
                     ->icon('heroicon-o-cog-8-tooth')->collapsed(),
-            ])->darkMode(false)
+            ])
+            ->darkMode(false)
             ->sidebarCollapsibleOnDesktop()
             ->collapsibleNavigationGroups(true)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

@@ -136,14 +136,21 @@ class TrabajoResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('tipoTrabajo.nombre')->badge()->color('success')->searchable(),
-                TextColumn::make('descripcion')->wrap()->label('Descripción'),
+                TextColumn::make('tipoTrabajo.nombre')->badge()->color('black')->searchable(),
+                TextColumn::make('descripcion')->color('black')->wrap()->label('Descripción')->weight('black'),
                 TextColumn::make('paciente_id')
                     ->label("Paciente-Clinica")->formatStateUsing(function (String $state) {
                     $paciente = Paciente::where('id', $state)->first();
                     $persona = Persona::where('id', $paciente->persona_id)->first();
                     $clinica = Clinica::where('id', $persona->clinica_id)->first();
-                    return $persona->nombre . " - " . $clinica->nombre;
+                    $foto = ($clinica->foto) ? $clinica->foto : "sinfoto.png" ;
+                    return new HtmlString(
+                        '<div class="flex items-center justify-between">
+                        <img src="' . asset("storage/" . $foto) . '" alt="Imagen" width="30" height="30" class="rounded-md shadow-md"> &nbsp;&nbsp;
+                            <span>' . $clinica->nombre . ' - ' . $persona->nombre . '</span>
+                        </div>'
+                    );
+                    
                 })->searchable(),
                 TextColumn::make('estado.nombre')->label('Estado')->badge()->color(function ($state) {
                     if ($state == 'Pendiente') {
@@ -158,13 +165,13 @@ class TrabajoResource extends Resource
                         return "green";
                     }
                 }),
-                TextColumn::make('color_boca')->label('Color'),
-                TextColumn::make('piezas')->formatStateUsing(function ($state) {$array = explode(',', $state);return "Total: " . count($array);})
+                TextColumn::make('color_boca')->label('Color')->weight('black'),
+                TextColumn::make('piezas')->weight('black')->formatStateUsing(function ($state) {$array = explode(',', $state);return "Total: " . count($array);})
                 ->tooltip(function ($state) {
                     return is_array($state) ? implode(', ', $state) : $state;
                 }),
-                TextColumn::make('entrada')->label('Fecha de entrada')->color("warning"),
-                TextColumn::make('salida')->label('Fecha de salida')->color("warning"),
+                TextColumn::make('entrada')->label('Fecha de entrada')->color("warning")->weight('black'),
+                TextColumn::make('salida')->label('Fecha de salida')->color("warning")->weight('black'),
             ])
             ->filters([
                 SelectFilter::make('paciente_id')
