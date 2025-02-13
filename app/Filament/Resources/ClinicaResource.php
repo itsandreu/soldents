@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Clusters\Registro;
 use App\Filament\Resources\ClinicaResource\Pages;
 use App\Filament\Resources\ClinicaResource\RelationManagers;
 use App\Filament\Resources\ClinicaResource\RelationManagers\PersonaRelationManager;
@@ -28,6 +29,8 @@ class ClinicaResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
     protected static ?string $navigationGroup = 'Work';
+
+    protected static ?string $cluster = Registro::class;
 
     public static function form(Form $form): Form
     {

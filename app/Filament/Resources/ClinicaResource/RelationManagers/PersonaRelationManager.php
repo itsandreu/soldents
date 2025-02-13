@@ -20,6 +20,7 @@ use App\Models\Persona;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Stack;
 
 class PersonaRelationManager extends RelationManager
 {
@@ -43,8 +44,20 @@ class PersonaRelationManager extends RelationManager
                 ->inline()
                 ->columnSpan(1)
                 ->required()
-                ->live() // Esto permite actualizar dinámicamente la interfaz
-                ->afterStateUpdated(fn($set) => $set('foto_boca', null)),
+                ->live() 
+                ->afterStateUpdated(function ($state, $set, $get, $record) {
+
+                    $set('foto_boca', null);
+            
+                    if ($record) {
+                        \Filament\Notifications\Notification::make()
+                            ->title('¡Atención!')
+                            ->body('Este usuario PUEDE tener trabajos asociados. Si cambias su tipo, se ELIMINARAN todos los trabajos.')
+                            ->danger()
+                            ->persistent()
+                            ->send();
+                    }
+                }),
             
                 FileUpload::make('foto_boca')
                 ->disk('public')
@@ -76,14 +89,19 @@ class PersonaRelationManager extends RelationManager
                 
             })->groups([
                 'tipo',
-            ])->defaultGroup('tipo')->modelLabel('Hola')
+            ])->defaultGroup('tipo')->modelLabel('Persona')
             ->recordTitleAttribute('nombre')
             ->columns([
-                Tables\Columns\TextColumn::make('nombre')->searchable(),
-                Tables\Columns\TextColumn::make('apellidos')->label("Apellidos"),
-                Tables\Columns\TextColumn::make('telefono')->label('Telefono'),
-                Tables\Columns\TextColumn::make('tipo')->label('Tipo')->searchable(),
-                ImageColumn::make('foto_boca')->circular()->default(asset("storage/sinfoto.png")),
+                Stack::make([
+                    Tables\Columns\TextColumn::make('nombre')->alignCenter()->weight('black')->searchable(),
+                    Tables\Columns\TextColumn::make('apellidos')->alignCenter()->weight('black')->label("Apellidos"),
+                    Tables\Columns\TextColumn::make('telefono')->alignCenter()->weight('black')->label('Telefono'),
+                    // Tables\Columns\TextColumn::make('tipo')->label('Tipo')->searchable(),
+                    ImageColumn::make('foto_boca')->alignCenter()->circular()->default(asset("storage/sinfoto.png")),
+                ])
+            ])->contentGrid([
+                'md' => 3,
+                'xl' => 5,
             ])
             ->filters([
                 
@@ -93,12 +111,9 @@ class PersonaRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+
             ]);
     }
 }

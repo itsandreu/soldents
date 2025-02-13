@@ -23,7 +23,7 @@ $trabajosHoy = $trabajos->filter(fn($trabajo) => $trabajo->salida == $hoy);
                             $persona = $paciente ? Persona::find($paciente->persona_id) : null;
                         @endphp
                         <li>
-                            <a href="{{ route('filament.admin.resources.trabajos.edit', $trabajo->id) }}" 
+                            <a href="{{ route('filament.admin.registro.resources.trabajos.edit', $trabajo->id) }}" 
                                 class="flex justify-between items-center p-3 bg-white border border-red-300 rounded-md hover:bg-red-50 transition">
                                 <span class="font-semibold text-gray-700">{{ Str::limit($trabajo->descripcion, 100, '...') }}</span>
                                 <span class="text-sm font-bold text-red-600">{{ $trabajo->salida }}</span>
@@ -37,6 +37,7 @@ $trabajosHoy = $trabajos->filter(fn($trabajo) => $trabajo->salida == $hoy);
                 <p class="mt-4 text-gray-700">✅ No hay trabajos programados para hoy.</p>
             @endif
         </div>
+        <div style="height: 50px;"></div>
         <div class="p-4 bg-white rounded-lg shadow-md">
             <h3 class="text-xl font-semibold">Proximos Trabajos</h3>
             
@@ -48,7 +49,7 @@ $trabajosHoy = $trabajos->filter(fn($trabajo) => $trabajo->salida == $hoy);
                         $persona = $paciente ? Persona::find($paciente->persona_id) : null;
                     @endphp
                     <li>
-                        <a href="{{ route('filament.admin.resources.trabajos.edit', $trabajo->id) }}" 
+                        <a href="{{ route('filament.admin.registro.resources.trabajos.edit', $trabajo->id) }}" 
                             class="grid grid-cols-4 gap-4 py-2 border-b hover:bg-gray-100 transition rounded-md px-2">
                             <span class="text-gray-700 font-small truncate ">{{ Str::limit($trabajo->descripcion, 120, '...') }}</span>
                             <span class="text-sm text-gray-500">{{ $trabajo->salida }}</span>

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Clusters\Registro;
 use App\Filament\Resources\TrabajoResource\Pages;
 use App\Filament\Resources\TrabajoResource\RelationManagers;
 use App\Filament\Resources\TrabajoResource\RelationManagers\InventarioRelationManager;
@@ -42,7 +43,7 @@ class TrabajoResource extends Resource
 
     protected static ?string $navigationGroup = 'Work';
 
-
+    protected static ?string $cluster = Registro::class;
 
     public static function form(Form $form): Form
     {
@@ -144,13 +145,14 @@ class TrabajoResource extends Resource
                     $persona = Persona::where('id', $paciente->persona_id)->first();
                     $clinica = Clinica::where('id', $persona->clinica_id)->first();
                     $foto = ($clinica->foto) ? $clinica->foto : "sinfoto.png" ;
-                    return new HtmlString(
-                        '<div class="flex items-center justify-between">
-                        <img src="' . asset("storage/" . $foto) . '" alt="Imagen" width="30" height="30" class="rounded-md shadow-md"> &nbsp;&nbsp;
-                            <span>' . $clinica->nombre . ' - ' . $persona->nombre . '</span>
-                        </div>'
-                    );
-                    
+                    return new HtmlString('
+                    <div class="flex items-center gap-2">
+                        <img src="' . asset("storage/" . $foto) . '" alt="Imagen" width="30" height="30" class="rounded-md shadow-md">
+                        <div class="flex flex-col">
+                            <span class="font-semibold">' . $clinica->nombre . '</span>
+                            <span class="text-sm text-gray-600">' . $persona->nombre . '</span>
+                        </div>
+                    </div>'); 
                 })->searchable(),
                 TextColumn::make('estado.nombre')->label('Estado')->badge()->color(function ($state) {
                     if ($state == 'Pendiente') {
@@ -170,8 +172,10 @@ class TrabajoResource extends Resource
                 ->tooltip(function ($state) {
                     return is_array($state) ? implode(', ', $state) : $state;
                 }),
-                TextColumn::make('entrada')->label('Fecha de entrada')->color("warning")->weight('black'),
-                TextColumn::make('salida')->label('Fecha de salida')->color("warning")->weight('black'),
+                // TextColumn::make('entrada')->label('Fecha de entrada')->color("warning")->weight('black'),
+                TextColumn::make('salida')->description(function($record){
+                    return "Entrada: " . $record->entrada;
+                })->label('Salida')->color("warning")->weight('black'),
             ])
             ->filters([
                 SelectFilter::make('paciente_id')
@@ -198,9 +202,9 @@ class TrabajoResource extends Resource
                 Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

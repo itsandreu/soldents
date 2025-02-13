@@ -173,7 +173,7 @@ class InventarioResource extends Resource
                 // })
             ])->contentGrid([
                 'md' => 3,
-                'xl' => 5,
+                'xl' => 4,
             ])
             ->filters([
 
