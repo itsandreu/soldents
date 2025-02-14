@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Clusters\Inventario;
 use App\Filament\Resources\TipoTrabajoResource\Pages;
 use App\Filament\Resources\TipoTrabajoResource\RelationManagers;
 use App\Models\TipoTrabajo;
@@ -23,7 +24,9 @@ class TipoTrabajoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
 
-    protected static ?string $navigationGroup = 'Ajustes';
+    protected static ?string $navigationGroup = 'Configuración';
+
+    protected static ?string $cluster = Inventario::class;
 
     public static function form(Form $form): Form
     {
