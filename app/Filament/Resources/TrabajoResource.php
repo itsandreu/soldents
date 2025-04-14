@@ -125,7 +125,7 @@ class TrabajoResource extends Resource
                         ])->columnSpan(1),
                         Section::make([
                             CheckboxList::make('cuadrante3')->label(" ")
-                                ->options(['31' => '31','32' => '32','33' => '33','34' => '34','35' => '35','36' => '36','37' => '37','38' => '38',])
+                                ->options(['31' => '31', '32' => '32', '33' => '33', '34' => '34', '35' => '35', '36' => '36', '37' => '37', '38' => '38',])
                                 ->columns(8)
                                 ->bulkToggleable()
                         ])->columnSpan(1),
@@ -141,19 +141,19 @@ class TrabajoResource extends Resource
                 TextColumn::make('descripcion')->color('black')->wrap()->label('Descripción')->weight('black'),
                 TextColumn::make('paciente_id')
                     ->label("Paciente-Clinica")->formatStateUsing(function (String $state) {
-                    $paciente = Paciente::where('id', $state)->first();
-                    $persona = Persona::where('id', $paciente->persona_id)->first();
-                    $clinica = Clinica::where('id', $persona->clinica_id)->first();
-                    $foto = ($clinica->foto) ? $clinica->foto : "sinfoto.png" ;
-                    return new HtmlString('
+                        $paciente = Paciente::where('id', $state)->first();
+                        $persona = Persona::where('id', $paciente->persona_id)->first();
+                        $clinica = Clinica::where('id', $persona->clinica_id)->first();
+                        $foto = ($clinica->foto) ? $clinica->foto : "sinfoto.png";
+                        return new HtmlString('
                     <div class="flex items-center gap-2">
                         <img src="' . asset("storage/" . $foto) . '" alt="Imagen" width="30" height="30" class="rounded-md shadow-md">
                         <div class="flex flex-col">
                             <span class="font-semibold">' . $clinica->nombre . '</span>
                             <span class="text-sm text-gray-600">' . $persona->nombre . '</span>
                         </div>
-                    </div>'); 
-                })->searchable(),
+                    </div>');
+                    })->searchable(),
                 TextColumn::make('estado.nombre')->label('Estado')->badge()->color(function ($state) {
                     if ($state == 'Pendiente') {
                         return "red";
@@ -163,39 +163,51 @@ class TrabajoResource extends Resource
                         return "amber";
                     } elseif ($state == 'Fresado') {
                         return "violet";
-                    }elseif ($state == 'Sinterizado') {
+                    } elseif ($state == 'Sinterizado') {
                         return "green";
                     }
                 }),
                 TextColumn::make('color_boca')->label('Color')->weight('black'),
-                TextColumn::make('piezas')->weight('black')->formatStateUsing(function ($state) {$array = explode(',', $state);return "Total: " . count($array);})
-                ->tooltip(function ($state) {
-                    return is_array($state) ? implode(', ', $state) : $state;
-                }),
+                TextColumn::make('piezas')->weight('black')->formatStateUsing(function ($state) {
+                    $array = explode(',', $state);
+                    return "Total: " . count($array);
+                })
+                    ->tooltip(function ($state) {
+                        return is_array($state) ? implode(', ', $state) : $state;
+                    }),
                 // TextColumn::make('entrada')->label('Fecha de entrada')->color("warning")->weight('black'),
-                TextColumn::make('salida')->description(function($record){
-                    return "Entrada: " . $record->entrada;
+                TextColumn::make('salida')->description(function ($record) {
+                    $entrada = \Carbon\Carbon::parse($record->entrada)->format('Y-m-d');
+                    if ($record->estado->nombre === 'Terminado') {
+                        return "Entrada: $entrada";
+                    }
+                    $salida = \Carbon\Carbon::parse($record->salida)->startOfDay();
+                    $hoy = \Carbon\Carbon::today();
+                    $diasFaltantes = $hoy->diffInDays($salida, false);
+                    $mensajeDias = $diasFaltantes > 0
+                        ? "Faltan $diasFaltantes días"
+                        : ($diasFaltantes === 0
+                            ? "Es hoy"
+                            : "Debió entregarese hace " . abs($diasFaltantes) . " días");
+                    return "Entrada: $entrada | $mensajeDias";
                 })->label('Salida')->color("warning")->weight('black'),
             ])
             ->filters([
                 SelectFilter::make('paciente_id')
-                ->options(function () {
-                    $personas = Persona::select('id', 'nombre', 'apellidos')
-                        ->get()
-                        ->mapWithKeys(fn($persona) => [$persona->id => "{$persona->nombre} {$persona->apellidos}"])
-                        ->toArray();
-            
-                    $pacientes = Paciente::pluck('id', 'persona_id')->toArray();
-            
-                    $opciones = [];
-                    foreach ($pacientes as $persona_id => $paciente_id) {
-                        if (isset($personas[$persona_id])) {
-                            $opciones[$paciente_id] = $personas[$persona_id];
+                    ->options(function () {
+                        $personas = Persona::select('id', 'nombre', 'apellidos')
+                            ->get()
+                            ->mapWithKeys(fn($persona) => [$persona->id => "{$persona->nombre} {$persona->apellidos}"])
+                            ->toArray();
+                        $pacientes = Paciente::pluck('id', 'persona_id')->toArray();
+                        $opciones = [];
+                        foreach ($pacientes as $persona_id => $paciente_id) {
+                            if (isset($personas[$persona_id])) {
+                                $opciones[$paciente_id] = $personas[$persona_id];
+                            }
                         }
-                    }
-            
-                    return $opciones;
-                        })
+                        return $opciones;
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -226,11 +238,11 @@ class TrabajoResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('estado_id',1)->count();
+        return static::getModel()::where('estado_id', 1)->count();
     }
 
     public static function getNavigationBadgeColor(): ?string
-    {   
-    return "warning";
+    {
+        return "warning";
     }
 }

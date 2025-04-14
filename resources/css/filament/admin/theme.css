@@ -116,7 +116,7 @@ svg.fi-sidebar-group-icon {
 
 /* Estilo cuando el sidebar está abierto */
 .fi-sidebar-header {
-    padding-left: 40px; /* Padding izquierdo */
+    padding-left: 0px; /* Padding izquierdo */
     padding-right: 0px; /* Padding derecho */
 }
 
@@ -127,7 +127,7 @@ svg.fi-sidebar-group-icon {
 }
 
 .fi-sidebar-header .fi-logo {
-    font-size: 2rem; /* Ajusta el tamaño del texto a 2rem (puedes cambiar este valor según lo que necesites) */
+    font-size: 1.7rem; /* Ajusta el tamaño del texto a 2rem (puedes cambiar este valor según lo que necesites) */
 }
 
 .fi-sidebar-group-button {

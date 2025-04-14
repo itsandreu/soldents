@@ -8,5 +8,5 @@ class Inventario extends Cluster
 {
     protected static ?string $navigationIcon = 'heroicon-o-beaker';
 
-
-}
+    protected static ?String $navigationLabel = 'Inventario';
+}  

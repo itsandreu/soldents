@@ -42,7 +42,7 @@ class InventarioResource extends Resource
 
     protected static ?string $navigationLabel = "Stock";
 
-    protected static ?string $Title = "Inventario";
+    protected static ?string $Title = "Stock";
 
     protected static ?string $cluster = ClustersInventario::class;
 
