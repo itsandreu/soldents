@@ -6,6 +6,7 @@ use App\Models\Persona;
 use App\Observers\PersonaObserver;
 use Illuminate\Support\ServiceProvider;
 
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -22,5 +23,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Persona::observe(PersonaObserver::class);
+
     }
 }

@@ -46,6 +46,7 @@ class AdminPanelProvider extends PanelProvider
                 'description' => Color::hex('#6c757d')
             ])->viteTheme('resources/css/filament/admin/theme.css')
             ->maxContentWidth(MaxWidth::Full)
+            ->brandLogo(asset('storage/soldents.png'))->brandLogoHeight('3.5rem')
             ->navigationGroups([
                 NavigationGroup::make()
                      ->label('Work')

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Clusters\Inventario;
+use App\Filament\Clusters\Registro;
 use App\Filament\Resources\EstadoResource\Pages;
 use App\Filament\Resources\EstadoResource\RelationManagers;
 use App\Models\Estado;
@@ -26,7 +27,7 @@ class EstadoResource extends Resource
 
     protected static ?string $navigationGroup = 'Configuración';
     
-    protected static ?string $cluster = Inventario::class;
+    protected static ?string $cluster = Registro::class;
 
     public static function form(Form $form): Form
     {

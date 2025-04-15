@@ -34,8 +34,33 @@ class Trabajo extends Model
         return $this->belongsTo(Paciente::class, 'paciente_id');
     }
 
-    public function inventario()
+    public function discos()
     {
-        return $this->belongsToMany(Inventario::class, 'inventario_trabajo')->withTimestamps();
+        return $this->belongsToMany(Disco::class, 'disco_trabajo')->withTimestamps();
+    }
+
+    public function fresas()
+    {
+        return $this->belongsToMany(Fresa::class, 'fresa_trabajo')->withTimestamps();
+    }
+
+    public function resinas()
+    {
+        return $this->belongsToMany(Resina::class, 'resina_trabajo')->withTimestamps();
+    }
+
+    public function interfases()
+    {
+        return $this->belongsToMany(Interfase::class, 'interfase_trabajo')->withTimestamps();
+    }
+
+    public function tornillos()
+    {
+        return $this->belongsToMany(Tornillo::class, 'tornillo_trabajo')->withTimestamps();
+    }
+
+    public function analogos()
+    {
+        return $this->belongsToMany(Analogo::class, 'analogo_trabajo')->withTimestamps();
     }
 }

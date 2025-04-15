@@ -6,12 +6,15 @@ use App\Filament\Clusters\Inventario;
 use App\Filament\Resources\ResinaResource\Pages;
 use App\Filament\Resources\ResinaResource\RelationManagers;
 use App\Models\Resina;
+use Closure;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,7 +26,7 @@ class ResinaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-lifebuoy';
 
-    protected static ?string $navigationGroup = 'Recursos';
+    protected static ?string $navigationGroup = 'Artículos';
 
     protected static ?string $cluster = Inventario::class;
 
@@ -31,15 +34,46 @@ class ResinaResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('tipo')
-                    ->options([
-                        'Modelos' => 'Modelos',
-                        'Férulas' => 'Férulas',
-                        'Encías' => 'Encías'
-                    ]),
-                TextInput::make('marca')->required(),
-                TextInput::make('litros')->numeric(),
-                TextInput::make('lote')->required()
+            Section::make()
+                ->columns([
+                    'sm' => 2,
+                    'xl' => 4,
+                    '2xl' => 6,
+                ])->schema([
+                    Section::make('Datos')
+                    ->description('Introduce las características básicas del material, incluyendo su tipo y la marca comercial. Esta sección permite identificar el producto de forma visual y técnica para su correcta clasificación.')
+                    ->schema([
+                        Select::make('tipo')
+                        ->options([
+                            'Modelos' => 'Modelos',
+                            'Férulas' => 'Férulas',
+                            'Encías' => 'Encías'
+                        ]),
+                        TextInput::make('marca')->required(),
+                    ])->columnSpan(2),
+                    Section::make('Medida')
+                    ->description('Introduce los litros que contiene este articulo.')
+                    ->schema([
+                        TextInput::make('litros')->numeric(),
+                    ])->columnSpan(2),
+                    Section::make('Referencias')
+                    ->description('Introduce las características básicas del material, incluyendo su Lote, las unidades del articulo y el status. Esta sección permite identificar el producto de forma visual y técnica para su correcta clasificación.')
+                    ->schema([
+                        TextInput::make('lote')->required(),
+                        TextInput::make('unidades')->numeric()->afterStateUpdated(function ($state, callable $set) {
+                            if ($state == 0) {
+                                $set('status', 'sin stock'); // Esto actualiza el campo 'status' en el formulario
+                            } elseif ($state > 0) {
+                                $set('status', 'stock');
+                            }
+                        })->live(),
+                        Select::make('status') ->options([
+                            'stock' => 'stock',
+                            'sin stock' => 'sin stock',
+                            'en uso' => 'en uso',
+                        ])->required(),
+                    ])->columnSpan(2)
+                ]),
             ]);
     }
 
@@ -47,11 +81,47 @@ class ResinaResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
+                // TextColumn::make('id'),
+                SelectColumn::make('status')
+                    ->options([
+                        'stock' => 'Stock',
+                        'sin stock' => 'Sin stock',
+                        'en uso' => 'En uso',
+                    ])->rules(function ($record) {
+                        return [
+                            function (string $attribute, $value, Closure $fail) use ($record) {
+                                if ($value === 'stock' && $record->unidades == 0) {
+                                    $fail('No puedes marcar como "stock" si no quedan unidades');
+                                } elseif ($value === 'en uso' && $record->unidades == 0) {
+                                    $fail('No puedes marcar como "stock" si no quedan unidades');
+                                } elseif ($value === 'sin stock' && $record->unidades > 0) {
+                                    $fail('No puedes marcar como "sin stock" si aún quedan unidades');
+                                }
+                            },
+                        ];
+                    })
+                    ->sortable()
+                    ->extraAttributes(fn($record) => [
+                        'class' => match ($record->status) {
+                            'stock' => 'bg-violet-300 text-green-800',
+                            'sin stock' => 'bg-gray-300 text-yellow-800',
+                            'en uso' => 'bg-green-500 text-blue-800',
+                            default => '',
+                        },
+                    ]),
                 TextColumn::make('tipo'),
                 TextColumn::make('marca'),
                 TextColumn::make('litros'),
-                TextColumn::make('lote')
+                TextColumn::make('lote'),
+                TextColumn::make('unidades')->badge()->color(function($state){
+                    if ($state < 2 ) {
+                        return 'danger';
+                    }elseif ($state > 2) {
+                        return 'success';
+                    }elseif ($state = 2 ) {
+                        return 'warning';
+                    }
+                })
             ])
             ->filters([
                 //

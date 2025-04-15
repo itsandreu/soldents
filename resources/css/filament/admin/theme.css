@@ -30,23 +30,130 @@
     @apply text-black;
 }
 nav.flex {
-    background-color: #a4c3b2;
+    background-color:rgb(51, 161, 153);
 }
 
 .fi-sidebar-header {
-    background-color: #a4c3b2;
+    background-color: rgb(51, 161, 153);
 }
 div.fi-layout{
-    background-color: #cce3de;
+    background-color: #bcf1e5;
 }
 
 
 
 .fi-ta-row:hover {
-    background-color: #ecf4f2; /* Color cuando el cursor esté encima */
+    background-color: #c9f8eb; /* Color cuando el cursor esté encima */
+}
+.fi-icon-btn-icon {
+    color: #336e27
 }
 
+button.fc-dayGridMonth-button.fc-button.fc-button-primary,
+button.fc-dayGridWeek-button.fc-button.fc-button-primary,
+button.fc-dayGridDay-button.fc-button.fc-button-primary {
+    background-color: rgb(72, 147, 141) !important;
+    border-color: rgb(255, 184, 30);
+    border-width: 2px;
+    color: white;
+}
 
+/* Estilo cuando se hace hover */
+button.fc-dayGridMonth-button.fc-button.fc-button-primary:hover,
+button.fc-dayGridWeek-button.fc-button.fc-button-primary:hover,
+button.fc-dayGridDay-button.fc-button.fc-button-primary:hover {
+    background-color: rgb(146, 234, 213) !important;
+    border-color: rgb(230, 170, 25);
+    color: black;
+}
+
+/* Estilo cuando el botón está activo (seleccionado) */
+button.fc-dayGridMonth-button.fc-button.fc-button-primary.fc-button-active,
+button.fc-dayGridWeek-button.fc-button.fc-button-primary.fc-button-active,
+button.fc-dayGridDay-button.fc-button.fc-button-primary.fc-button-active {
+    background-color: rgb(146, 234, 213) !important;
+    border-color: rgb(230, 170, 25);
+    color: black;
+}
+.fc-button-group .fc-button {
+    background-color: rgb(72, 147, 141) !important;
+    border-color: rgb(255, 184, 30);
+    border-width: 2px;
+    color: white;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Iconos dentro de botones del grupo */
+.fc-button-group .fc-button .fc-icon {
+    color: white;
+    transition: color 0.3s ease;
+}
+
+/* Hover sobre botones del grupo */
+.fc-button-group .fc-button:hover {
+    background-color: rgb(120, 223, 214) !important;
+    border-color: rgb(230, 170, 25);
+    color: white;
+}
+
+/* Iconos al hacer hover */
+.fc-button-group .fc-button:hover .fc-icon {
+    color: black;
+}
+
+/* Botón activo dentro del grupo */
+.fc-button-group .fc-button.fc-button-active {
+    background-color: rgb(60, 120, 115) !important;
+    border-color: rgb(230, 170, 25);
+    color: white;
+}
+
+/* Icono cuando el botón está activo */
+.fc-button-group .fc-button.fc-button-active .fc-icon {
+    color: white;
+}
+
+/* Estilo base para el botón Today */
+button.fc-today-button.fc-button {
+    background-color: rgb(72, 147, 141) !important;
+    border-color: rgb(255, 184, 30);
+    border-width: 2px;
+    color: white;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Icono dentro del botón Today */
+button.fc-today-button.fc-button .fc-icon {
+    color: white;
+    transition: color 0.3s ease;
+}
+
+/* Hover sobre el botón Today */
+button.fc-today-button.fc-button:hover {
+    background-color: rgb(142, 233, 225) !important;
+    border-color: rgb(230, 170, 25);
+    color: black;
+}
+
+/* Icono al hacer hover */
+button.fc-today-button.fc-button:hover .fc-icon {
+    color: white;
+}
+
+/* Botón Today activo */
+button.fc-today-button.fc-button.fc-button-active {
+    background-color: rgb(60, 120, 115) !important;
+    border-color: rgb(230, 170, 25);
+    color: white;
+}
+
+/* Icono cuando el botón Today está activo */
+button.fc-today-button.fc-button.fc-button-active .fc-icon {
+    color: white;
+}
+img.fi-logo.flex {
+    height: 100px;
+}
 .fi-btn{
     background-color: #99cc94;
     color: rgb(60, 60, 60);
@@ -116,7 +223,7 @@ svg.fi-sidebar-group-icon {
 
 /* Estilo cuando el sidebar está abierto */
 .fi-sidebar-header {
-    padding-left: 0px; /* Padding izquierdo */
+    padding-left: 7px; /* Padding izquierdo */
     padding-right: 0px; /* Padding derecho */
 }
 
