@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Fresa extends Model
 {
-    protected $fillable = ['tipo', 'material', 'marca', 'diametro'];
+    protected $fillable = ['tipo', 'material', 'marca', 'diametro','unidades','status'];
 
-    public function inventario(): MorphOne {
-        return $this->morphOne(Inventario::class, 'inventariable');
+    public function trabajos()
+    {
+        return $this->belongsToMany(Trabajo::class);
     }
 }

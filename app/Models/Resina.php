@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Resina extends Model
 {
-    protected $fillable = ['tipo', 'marca', 'litros', 'lote'];
+    protected $fillable = ['tipo', 'marca', 'litros', 'lote','status','unidades'];
 
-    public function inventario(): MorphOne {
-        return $this->morphOne(Inventario::class, 'inventariable');
+    public function trabajos()
+    {
+        return $this->belongsToMany(Trabajo::class);
     }
 }

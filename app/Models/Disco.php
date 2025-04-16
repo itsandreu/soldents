@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Disco extends Model
 {
-    protected $fillable = ['material', 'marca', 'color', 'translucidez', 'dimensiones', 'reduccion', 'lote'];
+    protected $fillable = ['material', 'marca', 'color', 'translucidez', 'dimensiones', 'reduccion', 'lote','status','unidades'];
 
-    public function inventario(): MorphOne {
-        return $this->morphOne(Inventario::class, 'inventariable');
+    public function trabajos()
+    {
+        return $this->belongsToMany(Trabajo::class);
     }
 }

@@ -5,7 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Clusters\Registro;
 use App\Filament\Resources\TrabajoResource\Pages;
 use App\Filament\Resources\TrabajoResource\RelationManagers;
+use App\Filament\Resources\TrabajoResource\RelationManagers\AnalogosRelationManager;
+use App\Filament\Resources\TrabajoResource\RelationManagers\DiscosRelationManager;
+use App\Filament\Resources\TrabajoResource\RelationManagers\FresasRelationManager;
+use App\Filament\Resources\TrabajoResource\RelationManagers\InterfasesRelationManager;
 use App\Filament\Resources\TrabajoResource\RelationManagers\InventarioRelationManager;
+use App\Filament\Resources\TrabajoResource\RelationManagers\ResinasRelationManager;
+use App\Filament\Resources\TrabajoResource\RelationManagers\TornillosRelationManager;
 use App\Models\Clinica;
 use App\Models\Estado;
 use App\Models\Paciente;
@@ -153,7 +159,7 @@ class TrabajoResource extends Resource
                             <span class="text-sm text-gray-600">' . $persona->nombre . '</span>
                         </div>
                     </div>');
-                    })->searchable(),
+                    })->searchable()->sortable(),
                 TextColumn::make('estado.nombre')->label('Estado')->badge()->color(function ($state) {
                     if ($state == 'Pendiente') {
                         return "red";
@@ -223,7 +229,12 @@ class TrabajoResource extends Resource
     public static function getRelations(): array
     {
         return [
-            InventarioRelationManager::class
+            DiscosRelationManager::class,
+            FresasRelationManager::class,
+            ResinasRelationManager::class,
+            InterfasesRelationManager::class,
+            TornillosRelationManager::class,
+            AnalogosRelationManager::class
         ];
     }
 
