@@ -105,6 +105,9 @@ class ClinicaResource extends Resource
         ];
     }
 
-    
+    public static function getNavigationBadge(): ?string
+    {
+        return self::$model::count();
+    }
 
 }

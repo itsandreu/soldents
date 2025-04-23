@@ -45,6 +45,7 @@ class InterfasesRelationManager extends RelationManager
             ])
             ->headerActions([
                 AttachAction::make()
+                ->label('Añadir Interfase')
                 ->preloadRecordSelect()
                 ->recordTitle(fn($record) => 
                     "{$record->marca->nombre} - {$record->tipo->nombre} 
@@ -56,7 +57,7 @@ class InterfasesRelationManager extends RelationManager
                 ),
             ])
             ->actions([
-                DetachAction::make()
+                DetachAction::make()->label('Quitar Interfase')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

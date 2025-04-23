@@ -43,6 +43,7 @@ class TornillosRelationManager extends RelationManager
             ])
             ->headerActions([
                 AttachAction::make()
+                ->label('Añadir Tornillo')
                 ->preloadRecordSelect()
                 ->recordTitle(fn($record) => 
                     "{$record->marca->nombre} - {$record->tipo->nombre} 
@@ -53,7 +54,7 @@ class TornillosRelationManager extends RelationManager
                 ),
             ])
             ->actions([
-                DetachAction::make()
+                DetachAction::make()->label('Quitar Tornillo')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

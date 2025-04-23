@@ -42,6 +42,7 @@ class ResinasRelationManager extends RelationManager
             ])
             ->headerActions([
                 AttachAction::make()
+                    ->label('Añadir Resina')
                     ->preloadRecordSelect()
                     ->recordTitle(fn($record) => "{$record->tipo} - {$record->marca} ({$record->litros} - {$record->lote})")
                     ->recordSelectOptionsQuery(
@@ -50,7 +51,7 @@ class ResinasRelationManager extends RelationManager
                     ),
             ])
             ->actions([
-                DetachAction::make()
+                DetachAction::make()->label('Quitar Resina')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

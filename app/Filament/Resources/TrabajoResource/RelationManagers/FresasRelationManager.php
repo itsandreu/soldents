@@ -42,6 +42,7 @@ class FresasRelationManager extends RelationManager
             ])
             ->headerActions([
                 AttachAction::make()
+                    ->label('Añadir Fresa')
                     ->preloadRecordSelect()
                     ->recordTitle(fn($record) => "{$record->tipo} - {$record->marca} ({$record->material} - {$record->diametro})")
                     ->recordSelectOptionsQuery(
@@ -50,7 +51,7 @@ class FresasRelationManager extends RelationManager
                     ),
             ])
             ->actions([
-                DetachAction::make()
+                DetachAction::make()->label('Quitar Fresa')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

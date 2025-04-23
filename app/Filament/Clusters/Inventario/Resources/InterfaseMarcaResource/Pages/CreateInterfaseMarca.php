@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateInterfaseMarca extends CreateRecord
 {
     protected static string $resource = InterfaseMarcaResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

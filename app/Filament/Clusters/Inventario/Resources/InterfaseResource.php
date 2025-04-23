@@ -18,6 +18,7 @@ use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class InterfaseResource extends Resource
@@ -54,7 +55,7 @@ class InterfaseResource extends Resource
                                         TextInput::make('nombre')
                                             ->required(),
                                     ]),
-                        ])->columnSpan(2),
+                            ])->columnSpan(2),
                         Section::make('Ajustes')
                             ->description('Define los parámetros técnicos y físicos del material, como su diametro, las alturasG y altruasH. Esta información es crucial para ajustar su uso ')
                             ->schema([
@@ -78,7 +79,7 @@ class InterfaseResource extends Resource
                                         'antirrotatorio' => 'Antirrotatorio',
                                         'rotatorio' => 'Rotatorio',
                                     ])->required()->columnSpan(2)
-                        ])->columnSpan(2),
+                            ])->columnSpan(2),
                         Section::make('Referencias')
                             ->description('Asocia valores clave de control logístico y seguimiento, como el estado actual del material y la cantidad de unidades disponibles. Estos datos facilitan la trazabilidad y gestión del inventario.')
                             ->schema([
@@ -104,8 +105,15 @@ class InterfaseResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordClasses(fn(Model $record) => match ($record->status) {
+                'stock' => 'bg-gray-100 text-gray-600 italic',
+                'sin stock' => 'bg-orange-100 opacity-30 font-semibold',
+                'en uso' => 'bg-green-100 text-green-800 font-bold',
+                default => 'bg-white',
+            })
+            ->deferLoading()
             ->columns([
-                SelectColumn::make('status')
+                SelectColumn::make('status')->label('Estado')
                     ->options([
                         'stock' => 'Stock',
                         'sin stock' => 'Sin stock',
@@ -123,22 +131,24 @@ class InterfaseResource extends Resource
                             },
                         ];
                     })
-                    ->sortable()
-                    ->extraAttributes(fn($record) => [
-                        'class' => match ($record->status) {
-                            'stock' => 'bg-violet-300 text-green-800',
-                            'sin stock' => 'bg-gray-300 text-yellow-800',
-                            'en uso' => 'bg-green-500 text-blue-800',
-                            default => '',
-                        },
-                    ]),
-                    TextColumn::make('marca.nombre')->sortable(),
-                    TextColumn::make('tipo.nombre')->sortable(),
-                    TextColumn::make('diametro.valor')->sortable(),
-                    TextColumn::make('alturaH.nombre')->sortable(),
-                    TextColumn::make('alturaG.valor')->sortable(),
-                    TextColumn::make('referencia')->sortable()->badge()->color('violet'),
-                    TextColumn::make('unidades')->sortable(),
+                    ->sortable(),
+                // ->extraAttributes(fn($record) => [
+                //     'class' => match ($record->status) {
+                //         'stock' => 'bg-violet-300 text-green-800',
+                //         'sin stock' => 'bg-gray-300 text-yellow-800',
+                //         'en uso' => 'bg-green-500 text-blue-800',
+                //         default => '',
+                //     },
+                // ]),
+                TextColumn::make('marca.nombre')->sortable(),
+                TextColumn::make('tipo.nombre')->sortable(),
+                TextColumn::make('diametro.valor')->sortable(),
+                TextColumn::make('alturaH.nombre')->sortable(),
+                TextColumn::make('alturaG.valor')->sortable(),
+                TextColumn::make('rotacion')->sortable(),
+                TextColumn::make('referencia')->sortable()->badge()->color('violet'),
+
+                TextColumn::make('unidades')->sortable(),
             ])
             ->filters([
                 //
@@ -167,5 +177,10 @@ class InterfaseResource extends Resource
             'create' => Pages\CreateInterfase::route('/create'),
             'edit' => Pages\EditInterfase::route('/{record}/edit'),
         ];
+    }
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return self::$model::count();
     }
 }

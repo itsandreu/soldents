@@ -107,7 +107,7 @@ class PersonaRelationManager extends RelationManager
                 
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->label('Agregar Persona'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

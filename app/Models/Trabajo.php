@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Trabajo extends Model
 {
@@ -20,6 +21,15 @@ class Trabajo extends Model
     protected $casts = [
         'piezas' => 'array'
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($trabajo) {
+            if (empty($trabajo->qr_token)) {
+                $trabajo->qr_token = Str::uuid();
+            }
+        });
+    }
 
     public function estado(){
         return $this->belongsTo(Estado::class);

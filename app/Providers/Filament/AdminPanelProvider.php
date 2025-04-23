@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Models\Clinica;
 use App\Models\User;
 use App\Filament\Widgets\trabajosWidget;
+use App\Providers\FilamentUserAvatarProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -44,7 +45,8 @@ class AdminPanelProvider extends PanelProvider
                 'black' => Color::hex('#001219'),
                 'aqua' => Color::hex('#00a896'),
                 'description' => Color::hex('#6c757d')
-            ])->viteTheme('resources/css/filament/admin/theme.css')
+            ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->maxContentWidth(MaxWidth::Full)
             ->brandLogo(asset('storage/soldents.png'))->brandLogoHeight('3.5rem')
             ->navigationGroups([
@@ -58,6 +60,8 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Ajustes')
                     ->icon('heroicon-o-cog-8-tooth')->collapsed(),
             ])
+            ->sidebarWidth('50rem')
+            ->collapsedSidebarWidth('2.5rem')
             ->darkMode(false)
             ->sidebarCollapsibleOnDesktop()
             ->collapsibleNavigationGroups(true)
@@ -85,7 +89,8 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->sidebarWidth('15rem')->plugin(
+            ->sidebarWidth('15rem')
+            ->plugin(
                 FilamentFullCalendarPlugin::make()
                 ->schedulerLicenseKey(false)
                 ->selectable()
@@ -104,6 +109,9 @@ class AdminPanelProvider extends PanelProvider
                     'editable' => true,
                     'eventLimit' => true, // Carga eventos desde una API o ruta
                 ])
-            );
+            )->userMenuItems([
+                'profile' => MenuItem::make()->label('Mi Perfil'),
+                // ...
+            ])->profile(isSimple: true)->breadcrumbs(true)->font('Poppins');
     }
 }
