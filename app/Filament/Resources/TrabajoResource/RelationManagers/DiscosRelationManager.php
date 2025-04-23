@@ -45,6 +45,7 @@ class DiscosRelationManager extends RelationManager
             ])
             ->headerActions([
                 AttachAction::make()
+                    ->label('Añadir Disco')
                     ->preloadRecordSelect()
                     ->recordTitle(fn($record) => "{$record->material} - {$record->marca} ({$record->color} - {$record->translucidez} - {$record->dimensiones} - {$record->reduccion} - {$record->lote})")
                     ->recordSelectOptionsQuery(
@@ -53,7 +54,7 @@ class DiscosRelationManager extends RelationManager
                     ),
             ])
             ->actions([
-                DetachAction::make()
+                DetachAction::make()->label('Quitar Disco')->requiresConfirmation()->modalHeading('¿Estas seguro que quieres quitar el disco de este trabajo?')->modalDescription('Podría verse afectada la integridad de los datos.')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

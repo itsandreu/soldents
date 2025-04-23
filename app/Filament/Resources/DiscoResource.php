@@ -18,6 +18,7 @@ use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DiscoResource extends Resource
@@ -50,14 +51,14 @@ class DiscoResource extends Resource
                             ])->columnSpan(2),
                         Section::make('Ajustes')
                             ->description('Define los parámetros técnicos y físicos del material, como su nivel de translucidez, las dimensiones específicas y cualquier factor de reducción. Esta información es crucial para ajustar su uso ')
-                            ->schema([  
+                            ->schema([
                                 TextInput::make('translucidez')->required()->columnSpan(2),
                                 TextInput::make('dimensiones')->required()->columnSpan(2),
                                 TextInput::make('reduccion')->numeric()->required()->columnSpan(2),
                             ])->columnSpan(2),
                         Section::make('Referencias')
                             ->description('Asocia valores clave de control logístico y seguimiento, como el estado actual del material, la cantidad de unidades disponibles y el número de lote. Estos datos facilitan la trazabilidad y gestión del inventario.')
-                            ->schema([ 
+                            ->schema([
                                 TextInput::make('unidades')->numeric()->required()->step(1)->afterStateUpdated(function ($state, callable $set) {
                                     if ($state == 0) {
                                         $set('status', 'sin stock'); // Esto actualiza el campo 'status' en el formulario
@@ -67,11 +68,11 @@ class DiscoResource extends Resource
                                 })->live()->columnSpan(2),
                                 TextInput::make('lote')->required()->columnSpan(2),
                                 Select::make('status')
-                                ->options([
-                                    'stock' => 'stock',
-                                    'sin stock' => 'sin stock',
-                                    'en uso' => 'en uso',
-                                ])->required()->columnSpan(2)
+                                    ->options([
+                                        'stock' => 'stock',
+                                        'sin stock' => 'sin stock',
+                                        'en uso' => 'en uso',
+                                    ])->required()->columnSpan(2)
                             ])->columnSpan(2),
                     ]),
             ]);
@@ -80,9 +81,15 @@ class DiscoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordClasses(fn(Model $record) => match ($record->status) {
+                'stock' => 'bg-gray-100 text-gray-600 italic',
+                'sin stock' => 'bg-orange-100 opacity-40 font-semibold',
+                'en uso' => 'bg-green-100 text-green-800 font-bold',
+                default => 'bg-white',
+            })
             ->columns([
                 // TextColumn::make('id'),
-                SelectColumn::make('status')
+                SelectColumn::make('status')->label('Estado')
                     ->options([
                         'stock' => 'Stock',
                         'sin stock' => 'Sin stock',
@@ -100,15 +107,7 @@ class DiscoResource extends Resource
                             },
                         ];
                     })
-                    ->sortable()
-                    ->extraAttributes(fn($record) => [
-                        'class' => match ($record->status) {
-                            'stock' => 'bg-violet-300 text-green-800',
-                            'sin stock' => 'bg-gray-300 text-yellow-800',
-                            'en uso' => 'bg-green-500 text-blue-800',
-                            default => '',
-                        },
-                    ]),
+                    ->sortable(),
                 TextColumn::make('material')->sortable(),
                 TextColumn::make('marca')->sortable(),
                 TextColumn::make('color')->sortable(),
@@ -116,12 +115,12 @@ class DiscoResource extends Resource
                 TextColumn::make('dimensiones')->sortable(),
                 TextColumn::make('reduccion')->sortable(),
                 TextColumn::make('lote')->sortable(),
-                TextColumn::make('unidades')->sortable()->badge()->color(function($state){
-                    if ($state < 2 ) {
+                TextColumn::make('unidades')->sortable()->badge()->color(function ($state) {
+                    if ($state < 2) {
                         return 'danger';
-                    }elseif ($state > 2) {
+                    } elseif ($state > 2) {
                         return 'success';
-                    }elseif ($state = 2 ) {
+                    } elseif ($state = 2) {
                         return 'warning';
                     }
                 })
@@ -153,5 +152,10 @@ class DiscoResource extends Resource
             'create' => Pages\CreateDisco::route('/create'),
             'edit' => Pages\EditDisco::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return self::$model::count();
     }
 }

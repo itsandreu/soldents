@@ -5,6 +5,7 @@ namespace App\Filament\Resources\DiscoResource\Pages;
 use App\Filament\Resources\DiscoResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Enums\MaxWidth;
 
 class ListDiscos extends ListRecords
 {
@@ -13,7 +14,8 @@ class ListDiscos extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Añadir Stock'),
         ];
     }
+
 }

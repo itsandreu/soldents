@@ -18,6 +18,7 @@ use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TornilloResource extends Resource
@@ -85,8 +86,14 @@ class TornilloResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordClasses(fn(Model $record) => match ($record->status) {
+                'stock' => 'bg-gray-100 text-gray-600 italic',
+                'sin stock' => 'opacity-40 bg-orange-100 font-semibold italic',
+                'en uso' => 'bg-green-100 text-green-800 font-bold italic',
+                default => 'bg-white',
+            })
             ->columns([
-                SelectColumn::make('status')
+                SelectColumn::make('status')->label('Estado')
                     ->options([
                         'stock' => 'Stock',
                         'sin stock' => 'Sin stock',
@@ -104,20 +111,12 @@ class TornilloResource extends Resource
                             },
                         ];
                     })
-                    ->sortable()
-                    ->extraAttributes(fn($record) => [
-                        'class' => match ($record->status) {
-                            'stock' => 'bg-violet-300 text-green-800',
-                            'sin stock' => 'bg-gray-300 text-yellow-800',
-                            'en uso' => 'bg-green-500 text-blue-800',
-                            default => '',
-                        },
-                    ]),
-                    TextColumn::make('marca.nombre')->sortable(),
-                    TextColumn::make('tipo.nombre')->sortable(),
-                    TextColumn::make('modelo.nombre')->sortable(),
-                    TextColumn::make('referencia')->sortable()->badge()->color('violet'),
-                    TextColumn::make('unidades')->sortable(),
+                    ->sortable(),
+                TextColumn::make('marca.nombre')->sortable(),
+                TextColumn::make('tipo.nombre')->sortable(),
+                TextColumn::make('modelo.nombre')->sortable(),
+                TextColumn::make('referencia')->sortable()->badge()->color('violet'),
+                TextColumn::make('unidades')->sortable(),
             ])
             ->filters([
                 //
@@ -146,5 +145,10 @@ class TornilloResource extends Resource
             'create' => Pages\CreateTornillo::route('/create'),
             'edit' => Pages\EditTornillo::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return self::$model::count();
     }
 }

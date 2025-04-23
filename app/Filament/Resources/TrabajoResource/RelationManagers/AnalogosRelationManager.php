@@ -43,6 +43,7 @@ class AnalogosRelationManager extends RelationManager
             ])
             ->headerActions([
                 AttachAction::make()
+                ->label('Añadir Análogo')
                 ->preloadRecordSelect()
                 ->recordTitle(fn($record) => 
                     "{$record->marca->nombre} - {$record->modelo->nombre} 
@@ -53,7 +54,7 @@ class AnalogosRelationManager extends RelationManager
                 ),
             ])
             ->actions([
-                DetachAction::make()
+                DetachAction::make()->label('Quitar Análogo')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

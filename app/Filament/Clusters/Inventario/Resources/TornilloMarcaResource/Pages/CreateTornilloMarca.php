@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTornilloMarca extends CreateRecord
 {
     protected static string $resource = TornilloMarcaResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

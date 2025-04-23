@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateInterfaseTipo extends CreateRecord
 {
     protected static string $resource = InterfaseTipoResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

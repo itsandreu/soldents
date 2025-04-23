@@ -18,6 +18,7 @@ use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class FresaResource extends Resource
@@ -63,11 +64,11 @@ class FresaResource extends Resource
                                     }
                                 })->live(),
                                 Select::make('status')
-                                ->options([
-                                    'stock' => 'stock',
-                                    'sin stock' => 'sin stock',
-                                    'en uso' => 'en uso',
-                                ])->required()
+                                    ->options([
+                                        'stock' => 'stock',
+                                        'sin stock' => 'sin stock',
+                                        'en uso' => 'en uso',
+                                    ])->required()
                             ])->columnSpan(3)
                     ])
             ]);
@@ -76,45 +77,43 @@ class FresaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordClasses(fn(Model $record) => match ($record->status) {
+                'stock' => 'bg-gray-100 text-gray-600 italic',
+                'sin stock' => 'opacity-40 bg-orange-100 font-semibold italic',
+                'en uso' => 'bg-green-100 text-green-800 font-bold italic',
+                default => 'bg-white',
+            })
             ->columns([
                 TextColumn::make('id'),
-                SelectColumn::make('status')
-                ->options([
-                    'stock' => 'Stock',
-                    'sin stock' => 'Sin stock',
-                    'en uso' => 'En uso',
-                ])->rules(function ($record) {
-                    return [
-                        function (string $attribute, $value, Closure $fail) use ($record) {
-                            if ($value === 'stock' && $record->unidades == 0) {
-                                $fail('No puedes marcar como "stock" si no quedan unidades');
-                            } elseif ($value === 'en uso' && $record->unidades == 0) {
-                                $fail('No puedes marcar como "stock" si no quedan unidades');
-                            } elseif ($value === 'sin stock' && $record->unidades > 0) {
-                                $fail('No puedes marcar como "sin stock" si aún quedan unidades');
-                            }
-                        },
-                    ];
-                })
-                ->sortable()
-                ->extraAttributes(fn($record) => [
-                    'class' => match ($record->status) {
-                        'stock' => 'bg-violet-300 text-green-800',
-                        'sin stock' => 'bg-gray-300 text-yellow-800',
-                        'en uso' => 'bg-green-500 text-blue-800',
-                        default => '',
-                    },
-                ]),
+                SelectColumn::make('status')->label('Estado')
+                    ->options([
+                        'stock' => 'Stock',
+                        'sin stock' => 'Sin stock',
+                        'en uso' => 'En uso',
+                    ])->rules(function ($record) {
+                        return [
+                            function (string $attribute, $value, Closure $fail) use ($record) {
+                                if ($value === 'stock' && $record->unidades == 0) {
+                                    $fail('No puedes marcar como "stock" si no quedan unidades');
+                                } elseif ($value === 'en uso' && $record->unidades == 0) {
+                                    $fail('No puedes marcar como "stock" si no quedan unidades');
+                                } elseif ($value === 'sin stock' && $record->unidades > 0) {
+                                    $fail('No puedes marcar como "sin stock" si aún quedan unidades');
+                                }
+                            },
+                        ];
+                    })
+                    ->sortable(),
                 TextColumn::make('tipo'),
                 TextColumn::make('material'),
                 TextColumn::make('marca'),
                 TextColumn::make('diametro'),
-                TextColumn::make('unidades')->badge()->color(function($state){
-                    if ($state < 2 ) {
+                TextColumn::make('unidades')->badge()->color(function ($state) {
+                    if ($state < 2) {
                         return 'danger';
-                    }elseif ($state > 2) {
+                    } elseif ($state > 2) {
                         return 'success';
-                    }elseif ($state = 2 ) {
+                    } elseif ($state = 2) {
                         return 'warning';
                     }
                 })
@@ -146,5 +145,10 @@ class FresaResource extends Resource
             'create' => Pages\CreateFresa::route('/create'),
             'edit' => Pages\EditFresa::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return self::$model::count();
     }
 }

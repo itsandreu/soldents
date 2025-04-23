@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\Persona;
 use App\Observers\PersonaObserver;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 
 
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Persona::observe(PersonaObserver::class);
+        Carbon::setLocale(App::getLocale());
 
     }
 }

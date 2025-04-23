@@ -1,0 +1,3 @@
+ngrok config add-authtoken TU_TOKEN_AQUI
+
+ngrok http 8000

@@ -11,6 +11,9 @@ class EditTrabajo extends EditRecord
 {
     protected static string $resource = TrabajoResource::class;
 
+    protected ?string $heading = "Editar Trabajo";
+
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
@@ -19,7 +22,7 @@ class EditTrabajo extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Eliminar'),
         ];
     }
 
@@ -75,6 +78,18 @@ class EditTrabajo extends EditRecord
             4 => $pieza >= 41 && $pieza <= 48, 
             default => false,
         };
+    }
+
+    protected function getSaveFormAction(): \Filament\Actions\Action
+    {
+        return parent::getSaveFormAction()
+            ->label('Guardar')->icon('heroicon-m-cloud-arrow-down');
+    }
+
+    protected function getCancelFormAction(): \Filament\Actions\Action
+    {
+        return parent::getCancelFormAction()
+            ->label('Cancelar')->color('warning')->icon('heroicon-m-x-mark');
     }
     
 }
