@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Interfase extends Model
 {
-    protected $fillable = ['status', 'interfase_marca_id', 'interfase_tipo_id', 'interfase_diametro_id','interfase_altura_g_id','interfase_altura_h_id','rotacion','referencia','unidades'];
+    protected $fillable = ['interfase_marca_id', 'interfase_tipo_id', 'interfase_diametro_id','interfase_altura_g_id','interfase_altura_h_id','rotacion','referencia','unidades'];
     
     public function trabajos()
     {

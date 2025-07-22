@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('trabajos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre'); // Nombre del trabajo
-            $table->text('descripcion'); // Descripción del trabajo
+            $table->text('descripcion')->nullable(); // Descripción del trabajo
             $table->foreignId('paciente_id')->constrained('pacientes')->onDelete('cascade');
             $table->timestamps();
         });

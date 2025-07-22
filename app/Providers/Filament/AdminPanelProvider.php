@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\CalendarWidget;
+use App\Filament\Widgets\FacturasTableWidget;
+use App\Filament\Widgets\TrabajosTableWidget;
 use App\Models\Clinica;
 use App\Models\User;
 use App\Filament\Widgets\trabajosWidget;
@@ -26,6 +29,14 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
+use App\Filament\Resources\UserResource;
+use Filament\Pages\Auth\EditProfile;
+use Filament\Facades\Filament;
+use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
+use Swis\Filament\Backgrounds\ImageProviders\MyImages;
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
+use App\Filament\Auth\Login;
+use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -60,6 +71,21 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Ajustes')
                     ->icon('heroicon-o-cog-8-tooth')->collapsed(),
             ])
+            ->plugins([
+                FilamentBackgroundsPlugin::make()
+                ->imageProvider(
+                    MyImages::make()
+                        ->directory('backgrounds/')
+                ),
+                AuthUIEnhancerPlugin::make()
+                    ->formPanelPosition('left')
+                        ->formPanelWidth('40%')
+                        ->formPanelBackgroundColor(Color::hex('#34a19a'))
+                        ->emptyPanelBackgroundColor(Color::hex('#f0f0f0'))
+                        ->emptyPanelBackgroundImageUrl(asset('backgrounds/loginfondo.png'))
+                        ->emptyPanelBackgroundImageOpacity('70%'),
+                FilamentApexChartsPlugin::make()
+            ])
             ->sidebarWidth('50rem')
             ->collapsedSidebarWidth('2.5rem')
             ->darkMode(false)
@@ -71,9 +97,12 @@ class AdminPanelProvider extends PanelProvider
                 
             ])
             ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                trabajosWidget::class
+                CalendarWidget::class,
+                trabajosWidget::class,
+                TrabajosTableWidget::class,
+                FacturasTableWidget::class
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -91,7 +120,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->sidebarWidth('15rem')
             ->plugin(
-                FilamentFullCalendarPlugin::make()
+            FilamentFullCalendarPlugin::make()
                 ->schedulerLicenseKey(false)
                 ->selectable()
                 ->editable()
@@ -110,8 +139,13 @@ class AdminPanelProvider extends PanelProvider
                     'eventLimit' => true, // Carga eventos desde una API o ruta
                 ])
             )->userMenuItems([
-                'profile' => MenuItem::make()->label('Mi Perfil'),
+                'profile' => MenuItem::make()
+                ->url(fn () => UserResource::getUrl('edit', ['record' => Filament::auth()->user()->id]))
+                ->label('Mi Perfil'),
                 // ...
-            ])->profile(isSimple: true)->breadcrumbs(true)->font('Poppins');
+            ])->profile(isSimple: true)
+            ->breadcrumbs(true)
+            ->font('Poppins')
+            ->spa();
     }
 }

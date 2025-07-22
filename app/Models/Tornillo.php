@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tornillo extends Model
 {
-    protected $fillable = ['status', 'tornillo_marca_id', 'tornillo_tipo_id','tornillo_modelo_id','referencia','unidades'];
+    protected $fillable = ['tornillo_marca_id', 'tornillo_tipo_id','tornillo_modelo_id','referencia','unidades'];
 
     public function trabajos()
     {

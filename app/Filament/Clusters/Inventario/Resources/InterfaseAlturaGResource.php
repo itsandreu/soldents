@@ -21,11 +21,11 @@ class InterfaseAlturaGResource extends Resource
 {
     protected static ?string $model = Interfase_altura_g::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-cube-transparent';
 
     protected static ?string $navigationGroup = 'Ajustes';
 
-    protected static bool $shouldRegisterNavigation = false;
+    // protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $cluster = Inventario::class;
 

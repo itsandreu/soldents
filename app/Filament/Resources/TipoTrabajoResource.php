@@ -33,7 +33,8 @@ class TipoTrabajoResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('nombre')
+                TextInput::make('nombre')->required(),
+                TextInput::make('precio')->required()->numeric(),
             ]);
     }
 

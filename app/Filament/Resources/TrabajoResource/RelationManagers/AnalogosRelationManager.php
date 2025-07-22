@@ -11,6 +11,7 @@ use Filament\Tables\Actions\DetachAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AnalogosRelationManager extends RelationManager
@@ -51,10 +52,18 @@ class AnalogosRelationManager extends RelationManager
                 ->recordSelectOptionsQuery(
                     fn(Builder $query) =>
                     $query->where('status', 'En uso')
-                ),
+                )->after(function (Model $record, Model $relatedRecord) {
+                    if ($relatedRecord->unidades > 0) {
+                        $relatedRecord->decrement('unidades');
+                    }
+                }),
             ])
             ->actions([
-                DetachAction::make()->label('Quitar Análogo')
+                DetachAction::make()->label('Quitar Análogo')->after(function (Model $record, Model $relatedRecord) {
+                    if ($relatedRecord->unidades > 0) {
+                        $relatedRecord->increment('unidades');
+                    }
+                })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

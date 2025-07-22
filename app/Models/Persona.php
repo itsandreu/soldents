@@ -13,9 +13,13 @@ class Persona extends Model
         'telefono',
         'tipo',
         'nota',
-        'foto_boca'
+        'foto_boca',
+        'identificador'
     ];
 
+    protected $casts = [
+        'foto_boca' => 'array',
+    ];
     public function clinica()
     {
         return $this->belongsTo(Clinica::class);

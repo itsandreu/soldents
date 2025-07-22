@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ClinicaResource\RelationManagers;
 
+use App\Models\Paciente;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -31,47 +32,52 @@ class PersonaRelationManager extends RelationManager
         return $form
             ->schema([
                 TextInput::make('nombre')->required()->label("Nombre"),
-                TextInput::make('apellidos')->required()->label("Apellidos"),
-                TextInput::make('telefono')->required()->label("Número de teléfono"),
+                TextInput::make('apellidos')->label("Apellidos"),
+                TextInput::make('telefono')->label("Número de teléfono"),
                 // Select::make('clinica')->relationship('clinica','nombre')->required(),
+                TextInput::make('identificador')
+                    ->label('Código paciente')
+                    ->required()
+                    ->visible(fn($get) => $get('tipo') === 'paciente'),
                 Radio::make('tipo')
-                ->options([
-                    'paciente' => 'Paciente',
-                    'doctorImplantes' => 'Doctor Implantes',
-                    'doctorOrtodoncia' => 'Doctor Ortodoncia',
-                    'doctorFija' => 'Doctor Fija',
-                ])
-                ->inline()
-                ->columnSpan(1)
-                ->required()
-                ->live() 
-                ->afterStateUpdated(function ($state, $set, $get, $record) {
-
-                    $set('foto_boca', null);
-            
-                    if ($record) {
-                        \Filament\Notifications\Notification::make()
-                            ->title('¡Atención!')
-                            ->body('Este usuario PUEDE tener trabajos asociados. Si cambias su tipo, se ELIMINARAN todos los trabajos.')
-                            ->danger()
-                            ->persistent()
-                            ->send();
-                    }
-                }),
-            
+                    ->options([
+                        'paciente' => 'Paciente',
+                        'doctorImplantes' => 'Doctor Implantes',
+                        'doctorOrtodoncia' => 'Doctor Ortodoncia',
+                        'doctorFija' => 'Doctor Fija',
+                    ])
+                    ->inline()
+                    ->columnSpan(1)
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function ($state, $set, $get, $record) {
+                        $set('foto_boca', null);
+                        if ($record) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('¡Atención!')
+                                ->body('Este usuario PUEDE tener trabajos asociados. Si cambias su tipo, se ELIMINARAN todos los trabajos.')
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                        }
+                    }),
                 FileUpload::make('foto_boca')
-                ->disk('public')
-                ->directory('bocas')
-                ->image()
-                ->imageEditor()
-                ->imageEditorAspectRatios([
-                    '16:9',
-                    '4:3',
-                    '1:1',
-                ])->columnSpanFull()
-                ->visible(fn($get) => $get('tipo') === 'paciente'),
-                MarkdownEditor::make('nota')->columnSpanFull(), 
-                TextInput::make('clinica_id')->default(function(){
+                    ->label('Fotos')
+                    ->multiple()
+                    ->disk('public')
+                    ->directory('bocas')
+                    ->image()
+                    ->imageEditor()
+                    
+                    ->preserveFilenames()
+                    ->imageEditorAspectRatios([
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ])->columnSpanFull()
+                    ->visible(fn($get) => $get('tipo') === 'paciente'),
+                MarkdownEditor::make('nota')->columnSpanFull(),
+                TextInput::make('clinica_id')->default(function () {
                     return $this->getOwnerRecord()->id;
                 })->disabled()->hidden(),
             ]);
@@ -81,39 +87,46 @@ class PersonaRelationManager extends RelationManager
     {
         return $table
             ->query(function (Builder $query) {
-                
+
                 $clinicaId = $this->getOwnerRecord()->id;
 
                 // Modificar la consulta para filtrar por el clinica_id
                 $query->where('clinica_id', $clinicaId);
-                
+
             })->groups([
-                'tipo',
-            ])->defaultGroup('tipo')->modelLabel('Persona')
+                    'tipo',
+                ])->defaultGroup('tipo')->modelLabel('Persona')
             ->recordTitleAttribute('nombre')
             ->columns([
-                Stack::make([
+            Stack::make([
+                    Tables\Columns\TextColumn::make('identificador')->label('Codigo Cliente')->alignCenter()->weight('black')->searchable()->badge()->color('info'),
                     Tables\Columns\TextColumn::make('nombre')->alignCenter()->weight('black')->searchable(),
                     Tables\Columns\TextColumn::make('apellidos')->alignCenter()->weight('black')->label("Apellidos"),
                     Tables\Columns\TextColumn::make('telefono')->alignCenter()->weight('black')->label('Telefono'),
                     // Tables\Columns\TextColumn::make('tipo')->label('Tipo')->searchable(),
-                    ImageColumn::make('foto_boca')->alignCenter()->circular()->default(asset("storage/sinfoto.png")),
-                ])
-            ])->contentGrid([
-                'md' => 3,
-                'xl' => 5,
+                    ImageColumn::make('foto_boca')
+                    ->visible(function ($state) {
+                        return !empty($state);
+                    })->alignCenter()->circular(),
             ])
+            ])->contentGrid([
+                    'md' => 3,
+                    'xl' => 5,
+                ])
             ->filters([
-                
+
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->label('Agregar Persona'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
 
             ]);
     }
 }
+
+

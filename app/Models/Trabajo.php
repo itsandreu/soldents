@@ -14,12 +14,13 @@ class Trabajo extends Model
         'salida',
         'estado_id',
         'color_boca',
-        'tipo_trabajo_id',
-        'piezas'
+        'piezas',
+        'files'
     ];
 
     protected $casts = [
-        'piezas' => 'array'
+        'piezas' => 'array',
+        'files' => 'array'
     ];
 
     protected static function booted()
@@ -36,7 +37,7 @@ class Trabajo extends Model
     }
 
     public function tipoTrabajo(){
-        return $this->belongsTo(TipoTrabajo::class);
+        return $this->belongsToMany(TipoTrabajo::class,'trabajo_tipo_trabajo')->withTimestamps();
     }
 
     public function paciente()

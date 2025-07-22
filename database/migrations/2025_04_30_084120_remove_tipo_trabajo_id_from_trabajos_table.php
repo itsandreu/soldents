@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('interfases', function (Blueprint $table) {
-            $table->unsignedBigInteger('interfase_marca_id');
+        Schema::table('trabajos', function (Blueprint $table) {
+            $table->dropColumn('tipo_trabajo_id');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('interfases', function (Blueprint $table) {
-            $table->dropIfExists('interfase_marca_id');
+        Schema::table('trabajos', function (Blueprint $table) {
+            //
         });
     }
 };

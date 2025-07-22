@@ -9,11 +9,17 @@ class trabajosWidget extends Widget
 {
     protected static string $view = 'filament.widgets.trabajos-widget';
 
-    protected int | string | array $columnSpan = '3';
+    protected int|string|array $columnSpan = '3';
     public function render(): \Illuminate\View\View
     {
         // Obtén los trabajos, puedes personalizar esta consulta según lo que necesites
-        $trabajos = Trabajo::latest()->limit(5)->get();  // Aquí obtenemos los 5 trabajos más recientes
+        // $trabajos = Trabajo::latest()->limit(10)->get();
+        $trabajos = Trabajo::whereBetween('salida', [
+                now()->startOfDay(),
+                now()->addDays(30)->endOfDay()
+            ])
+            ->orderBy('salida', 'asc')
+            ->get();
 
         // Pasa los datos a la vista
         return view('filament.widgets.trabajos-widget', [

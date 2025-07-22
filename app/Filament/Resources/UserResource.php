@@ -16,6 +16,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -23,6 +24,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 use Nette\Utils\ImageColor;
+use Filament\Facades\Filament;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Support\Enums\Alignment;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Actions\Action;
 
 class UserResource extends Resource
 {
@@ -53,14 +59,14 @@ class UserResource extends Resource
                             'admin' => 'heroicon-o-shield-check',
                             'editor' => 'heroicon-o-pencil',
                             'user' => 'heroicon-o-user',
-                        ]),
-                    FileUpload::make('foto')
-                        ->image()
-                        ->directory('users')
-                        ->imageEditor() // opcional, para recortar
-                        ->imagePreviewHeight('100')
-                        ->maxSize(2048) // 2MB
-                        ->nullable()->columnSpan(1),
+                        ])->disableOptionWhen(function ($value): bool {
+                            $user = Filament::auth()->user();
+                            return $user->role !== 'admin';
+                        }),
+                    TextInput::make('email')->label('Correo')
+                        ->email()
+                        ->required()
+                        ->maxLength(255)->columnSpan(1),
                     TextInput::make('password')->label('Contraseña')
                         ->password()
                         ->required(fn (Page $livewire): bool => $livewire instanceof CreateRecord)
@@ -68,10 +74,13 @@ class UserResource extends Resource
                         ->same('passwordConfirmation')
                         ->dehydrated(fn ($state) => filled ($state))
                         ->dehydrateStateUsing(fn ($state) => Hash::make($state)),
-                    TextInput::make('email')->label('Correo')
-                        ->email()
-                        ->required()
-                        ->maxLength(255)->columnSpan(1),
+                    FileUpload::make('foto')
+                        ->image()
+                        ->directory('users')
+                        ->imageEditor() // opcional, para recortar
+                        ->imagePreviewHeight('100')
+                        ->maxSize(2048) // 2MB
+                        ->nullable()->columnSpan(1),
                     TextInput::make('passwordConfirmation')
                         ->password()->label('Confirmar Contraseña')
                         ->label('Confirmar Contraseña')
@@ -86,37 +95,71 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('foto_url')->label('Foto')->getStateUsing(fn ($record) => $record->foto_url ?: asset('storage/default-icon.png'))->circular(),
-                TextColumn::make('name')->label('Nombre'),
-                TextColumn::make('email')->label('Correo'),
-                TextColumn::make('role')->badge()->icon(function ($state){
-                    if ($state === 'admin') {
-                        return 'heroicon-m-shield-check';
-                    }elseif ($state === 'editor') {
-                        return 'heroicon-o-pencil';
-                    }else {
-                        return 'heroicon-o-user';
-                    }
-                })->color(function ($state){
-                    if ($state === 'admin') {
-                        return 'success';
-                    }elseif ($state === 'editor') {
-                        return 'warning';
-                    }else {
-                        return 'primary';
-                    }
-                })->label('Rol')
+                Split::make([
+                    ImageColumn::make('foto_url')
+                        ->label('Foto')
+                        ->getStateUsing(fn ($record) => $record->foto_url ?: asset('storage/default-icon.png'))
+                        ->circular()->alignCenter()
+                        ->grow(false),
+                    TextColumn::make('name')->label('Nombre')->alignCenter(),
+                    TextColumn::make('email')->label('Correo')->alignCenter(),
+                    TextColumn::make('role')
+                        ->badge()
+                        ->icon(function ($state) {
+                            if ($state === 'admin') {
+                                return 'heroicon-m-shield-check';
+                            } elseif ($state === 'editor') {
+                                return 'heroicon-o-pencil';
+                            } else {
+                                return 'heroicon-o-user';
+                            }
+                        })
+                        ->color(function ($state) {
+                            if ($state === 'admin') {
+                                return 'success';
+                            } elseif ($state === 'editor') {
+                                return 'warning';
+                            } else {
+                                return 'primary';
+                            }
+                        })
+                        ->label('Rol')->alignCenter(),
+                        // TextColumn::make('faceid_registrado')
+                        // ->label('FaceID')
+                        // ->badge()
+                        // ->icon(fn ($state) => $state ? 'heroicon-o-face-smile' : 'heroicon-o-face-frown')
+                        // ->color(fn ($state) => $state ? 'success' : 'danger')
+                        // ->formatStateUsing(fn ($state) => $state ? 'OK' : 'No registrado')
+                        // ->sortable(),
+                ])->from('md'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Action::make('registrar_faceid')
+                // ->label('Registrar FaceID')
+                // ->icon('heroicon-m-finger-print')
+                // ->modalHeading('Registrar FaceID')
+                // ->modalSubheading('Conecta tu FaceID o sensor biométrico para registrar este usuario.')
+                // ->modalButton('Registrar ahora')
+                // ->modalContent(function ($record) {
+                //     return view('admin.faceid-register-modal', compact('record'));
+                // })
+                // ->extraAttributes(['class' => 'text-green-600'])
+                // ->visible(fn ($record) => auth()->user()->can('update', $record)) // Opcional: solo administradores
+                // ->color('success')
+                // ->action(function ($record) {
+                //     // $this->dispatchBrowserEvent('faceid-register', [
+                //     //     'userId' => $record->id,
+                //     // ]);
+                // })
+                // ->requiresConfirmation() // Opcional: pedir confirmación antes
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

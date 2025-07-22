@@ -20,6 +20,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Support\Enums\Alignment;
 
 class DiscoResource extends Resource
 {
@@ -110,20 +113,20 @@ class DiscoResource extends Resource
                     ->sortable(),
                 TextColumn::make('material')->sortable(),
                 TextColumn::make('marca')->sortable(),
-                TextColumn::make('color')->sortable(),
+                TextColumn::make('color')->sortable()->searchable(),
                 TextColumn::make('translucidez')->sortable(),
-                TextColumn::make('dimensiones')->sortable(),
-                TextColumn::make('reduccion')->sortable(),
-                TextColumn::make('lote')->sortable(),
-                TextColumn::make('unidades')->sortable()->badge()->color(function ($state) {
-                    if ($state < 2) {
-                        return 'danger';
-                    } elseif ($state > 2) {
-                        return 'success';
-                    } elseif ($state = 2) {
-                        return 'warning';
-                    }
-                })
+                    TextColumn::make('dimensiones')->sortable(),
+                    TextColumn::make('reduccion')->sortable(),
+                    TextColumn::make('lote')->sortable(),
+                    TextColumn::make('unidades')->sortable()->badge()->color(function ($state) {
+                        if ($state < 2) {
+                            return 'danger';
+                        } elseif ($state > 2) {
+                            return 'success';
+                        } elseif ($state = 2) {
+                            return 'warning';
+                        }
+                    })
             ])
             ->filters([
                 //

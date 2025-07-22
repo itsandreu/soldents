@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>TRABAJO - {{ $record->id }} - {{$record->paciente->persona->apellidos}}</title>
+  <title>TRABAJO - {{ $record->id }} - {{ $record->paciente->persona->apellidos }}</title>
   <style>
     @page {
       size: A4;
@@ -57,7 +57,7 @@
       background-color: white;
       text-align: center;
       font-weight: bold;
-      padding-top: 10;
+      padding-top: 10px;
     }
 
     table {
@@ -107,32 +107,41 @@
   <div class="contenedor-a4">
     <div class="hoja-a5">
 
-      <!-- Encabezado con tabla -->
+      <!-- Encabezado -->
       <table class="encabezado-tabla">
         <tr>
-          <td colspan="3" style="text-align: center;padding-top:5;"><span style="font-size: 30px;">{{ $clinicaNombre }}</span></td>
-          <td style="text-align: center;"><span style="font-size: 15px;">{{ $clinicaTelefono }}</span></td>
+          <td colspan="2" style="text-align: center; padding-top: 5px;">
+            <span style="font-size: 30px;">{{ $clinicaNombre }}</span>
+          </td>
+          <td style="text-align: center;">
+            <span style="font-size: 15px;">{{ $clinicaTelefono }}</span>
+          </td>
         </tr>
       </table>
 
       <!-- Tabla principal -->
       <table>
         <colgroup>
-          <col style="width: 25%;">
-          <col style="width: 35%;">
-          <col style="width: 20%;">
-          <col style="width: 20%;">
+          <col style="width: 30%;">
+          <col style="width: 50%;">
           <col style="width: 20%;">
         </colgroup>
 
         <tr>
-          <td><span colspan="1" style="font-weight: bold;"></span><span style="font-size: 30px;"> T-{{ $record->id }}</span></td>
-          <td><span colspan="3" style="font-weight: bold;">Tipo<br></span><span style="font-size: 25px;"> {{ $record->tipoTrabajo->nombre }}<br></td>
-          <td colspan="1"><span style="font-weight: bold;">Fase<br></span><span style="font-size: 25px;">{{ $record->estado->nombre }} </span></td>
-          <td><span style="font-size: 20px;"> {{ $record->paciente->persona->nombre }} {{ $record->paciente->persona->apellidos }}</span></td>
+          <td><span style="font-size: 30px; font-weight: bold;">T-{{ $record->id }}</span></td>
+          <td>
+            <span style="font-weight: bold;">Tipo<br></span>
+            <span style="font-size: 25px;">{{ $record->tipoTrabajo->pluck('nombre')->implode(', ') }}</span>
+          </td>
+          <td>
+            <span style="font-size: 20px;">
+              {{ $record->paciente->persona->nombre }} {{ $record->paciente->persona->apellidos }}
+            </span>
+          </td>
         </tr>
+
         <tr>
-          <td colspan="3" style="text-align: left;">
+          <td colspan="2" style="text-align: left;">
             <span style="font-weight: bold;">Notas:</span>
           </td>
           <td class="qr">
@@ -145,21 +154,22 @@
             <span style="font-size: 20px; font-weight: bold;">
               Color: {{ $record->color_boca }}
             </span><br>
-            <span style="font-weight: bold;">Fecha entrada:</span> {{ $entrada }}<br>
+            <span style="font-weight: bold;">Fecha entrada:</span> {{ $entrada }}
           </td>
-          <td colspan="2">
+          <td>
             <div class="fecha-grande">{{ $salida }}</div>
             <div class="fecha-etiqueta">Fecha de salida</div>
           </td>
         </tr>
 
         <tr>
-          <td colspan="4">
+          <td colspan="3">
             <div class="marca-agua"> GitHub: https://github.com/itsandreu</div>
           </td>
         </tr>
 
       </table>
+
     </div>
   </div>
 </body>

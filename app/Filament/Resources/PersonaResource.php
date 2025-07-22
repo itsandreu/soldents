@@ -39,7 +39,7 @@ class PersonaResource extends Resource
         return $form
             ->schema([
                 TextInput::make('nombre')->label("Nombre"),
-                TextInput::make('apellidos')->label("Dirección"),
+                TextInput::make('apellidos')->label("Apellidos"),
                 TextInput::make('telefono')->label("Número de teléfono"),
                 Select::make('clinica')->relationship('clinica','nombre')->required(),
                 Radio::make('tipo')

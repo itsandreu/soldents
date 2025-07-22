@@ -29,6 +29,7 @@ class PersonaObserver
             // Eliminar el rol anterior
             Paciente::where('persona_id', $persona->id)->delete();
             Doctor::where('persona_id', $persona->id)->delete();
+            Persona::where('id', $persona->id)->update(['identificador' => null]);
 
             // Crear el nuevo tipo
             if ($persona->tipo === 'paciente') {

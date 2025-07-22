@@ -12,6 +12,10 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\SelectColumn;
@@ -21,13 +25,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use Filament\Forms\Components\Actions\Action;
 class InterfaseResource extends Resource
 {
     protected static ?string $model = Interfase::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Consumibles';
+    protected static ?string $navigationGroup = 'Artículos';
 
     protected static ?string $cluster = Inventario::class;
 
@@ -81,21 +86,22 @@ class InterfaseResource extends Resource
                                     ])->required()->columnSpan(2)
                             ])->columnSpan(2),
                         Section::make('Referencias')
-                            ->description('Asocia valores clave de control logístico y seguimiento, como el estado actual del material y la cantidad de unidades disponibles. Estos datos facilitan la trazabilidad y gestión del inventario.')
+                            ->description('Asocia valores clave de control logístico y seguimiento, como el material y la cantidad de unidades disponibles. Estos datos facilitan la trazabilidad y gestión del inventario.')
                             ->schema([
-                                TextInput::make('unidades')->numeric()->required()->step(1)->afterStateUpdated(function ($state, callable $set) {
-                                    if ($state == 0) {
-                                        $set('status', 'sin stock'); // Esto actualiza el campo 'status' en el formulario
-                                    } elseif ($state > 0) {
-                                        $set('status', 'stock');
-                                    }
-                                })->live(),
-                                Select::make('status')
-                                    ->options([
-                                        'stock' => 'stock',
-                                        'sin stock' => 'sin stock',
-                                        'en uso' => 'en uso',
-                                    ])->required(),
+                                TextInput::make('unidades')->numeric()->required()->step(1),
+                                // ->afterStateUpdated(function ($state, callable $set) {
+                                //     if ($state == 0) {
+                                //         $set('status', 'sin stock'); // Esto actualiza el campo 'status' en el formulario
+                                //     } elseif ($state > 0) {
+                                //         $set('status', 'stock');
+                                //     }
+                                // })->live(),
+                                // Select::make('status')
+                                //     ->options([
+                                //         'stock' => 'stock',
+                                //         'sin stock' => 'sin stock',
+                                //         'en uso' => 'en uso',
+                                //     ])->required(),
                                 TextInput::make('referencia')->required()
                             ])->columnSpan(2),
                     ]),
@@ -105,33 +111,27 @@ class InterfaseResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->recordClasses(fn(Model $record) => match ($record->status) {
-                'stock' => 'bg-gray-100 text-gray-600 italic',
-                'sin stock' => 'bg-orange-100 opacity-30 font-semibold',
-                'en uso' => 'bg-green-100 text-green-800 font-bold',
-                default => 'bg-white',
-            })
             ->deferLoading()
             ->columns([
-                SelectColumn::make('status')->label('Estado')
-                    ->options([
-                        'stock' => 'Stock',
-                        'sin stock' => 'Sin stock',
-                        'en uso' => 'En uso',
-                    ])->rules(function ($record) {
-                        return [
-                            function (string $attribute, $value, Closure $fail) use ($record) {
-                                if ($value === 'stock' && $record->unidades == 0) {
-                                    $fail('No puedes marcar como "stock" si no quedan unidades');
-                                } elseif ($value === 'en uso' && $record->unidades == 0) {
-                                    $fail('No puedes marcar como "stock" si no quedan unidades');
-                                } elseif ($value === 'sin stock' && $record->unidades > 0) {
-                                    $fail('No puedes marcar como "sin stock" si aún quedan unidades');
-                                }
-                            },
-                        ];
-                    })
-                    ->sortable(),
+                // SelectColumn::make('status')->label('Estado')
+                //     ->options([
+                //         'stock' => 'Stock',
+                //         'sin stock' => 'Sin stock',
+                //         'en uso' => 'En uso',
+                //     ])->rules(function ($record) {
+                //         return [
+                //             function (string $attribute, $value, Closure $fail) use ($record) {
+                //                 if ($value === 'stock' && $record->unidades == 0) {
+                //                     $fail('No puedes marcar como "stock" si no quedan unidades');
+                //                 } elseif ($value === 'en uso' && $record->unidades == 0) {
+                //                     $fail('No puedes marcar como "stock" si no quedan unidades');
+                //                 } elseif ($value === 'sin stock' && $record->unidades > 0) {
+                //                     $fail('No puedes marcar como "sin stock" si aún quedan unidades');
+                //                 }
+                //             },
+                //         ];
+                //     })
+                //     ->sortable(),
                 // ->extraAttributes(fn($record) => [
                 //     'class' => match ($record->status) {
                 //         'stock' => 'bg-violet-300 text-green-800',
@@ -146,9 +146,16 @@ class InterfaseResource extends Resource
                 TextColumn::make('alturaH.nombre')->sortable(),
                 TextColumn::make('alturaG.valor')->sortable(),
                 TextColumn::make('rotacion')->sortable(),
-                TextColumn::make('referencia')->sortable()->badge()->color('violet'),
+                TextColumn::make('referencia')->sortable()->badge()->color('violet')->searchable(),
 
-                TextColumn::make('unidades')->sortable(),
+                TextColumn::make('unidades')->sortable()->badge()
+                ->color(function($state){
+                        if($state == '0'){
+                            return 'danger';
+                        }else{
+                            return 'sky';
+                        }
+                }),
             ])
             ->filters([
                 //
@@ -178,7 +185,7 @@ class InterfaseResource extends Resource
             'edit' => Pages\EditInterfase::route('/{record}/edit'),
         ];
     }
-    
+
     public static function getNavigationBadge(): ?string
     {
         return self::$model::count();

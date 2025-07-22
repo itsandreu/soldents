@@ -27,7 +27,7 @@ class TornilloResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Consumibles';
+    protected static ?string $navigationGroup = 'Artículos';
 
     protected static ?string $cluster = Inventario::class;
 
@@ -65,19 +65,7 @@ class TornilloResource extends Resource
                             ->description('Asocia valores clave de control logístico y seguimiento, como el estado actual del material y la cantidad de unidades disponibles y el numero de referencia. Estos datos facilitan la trazabilidad y gestión del inventario.')
                             ->schema([
                                 TextInput::make('referencia')->required(),
-                                TextInput::make('unidades')->numeric()->required()->step(1)->afterStateUpdated(function ($state, callable $set) {
-                                    if ($state == 0) {
-                                        $set('status', 'sin stock'); // Esto actualiza el campo 'status' en el formulario
-                                    } elseif ($state > 0) {
-                                        $set('status', 'stock');
-                                    }
-                                })->live(),
-                                Select::make('status')
-                                    ->options([
-                                        'stock' => 'stock',
-                                        'sin stock' => 'sin stock',
-                                        'en uso' => 'en uso',
-                                    ])->required(),
+                                TextInput::make('unidades')->numeric()->required()->step(1),
                             ])->columnSpan(3),
                     ]),
             ]);
@@ -93,30 +81,37 @@ class TornilloResource extends Resource
                 default => 'bg-white',
             })
             ->columns([
-                SelectColumn::make('status')->label('Estado')
-                    ->options([
-                        'stock' => 'Stock',
-                        'sin stock' => 'Sin stock',
-                        'en uso' => 'En uso',
-                    ])->rules(function ($record) {
-                        return [
-                            function (string $attribute, $value, Closure $fail) use ($record) {
-                                if ($value === 'stock' && $record->unidades == 0) {
-                                    $fail('No puedes marcar como "stock" si no quedan unidades');
-                                } elseif ($value === 'en uso' && $record->unidades == 0) {
-                                    $fail('No puedes marcar como "stock" si no quedan unidades');
-                                } elseif ($value === 'sin stock' && $record->unidades > 0) {
-                                    $fail('No puedes marcar como "sin stock" si aún quedan unidades');
-                                }
-                            },
-                        ];
-                    })
-                    ->sortable(),
+                // SelectColumn::make('status')->label('Estado')
+                //     ->options([
+                //         'stock' => 'Stock',
+                //         'sin stock' => 'Sin stock',
+                //         'en uso' => 'En uso',
+                //     ])->rules(function ($record) {
+                //         return [
+                //             function (string $attribute, $value, Closure $fail) use ($record) {
+                //                 if ($value === 'stock' && $record->unidades == 0) {
+                //                     $fail('No puedes marcar como "stock" si no quedan unidades');
+                //                 } elseif ($value === 'en uso' && $record->unidades == 0) {
+                //                     $fail('No puedes marcar como "stock" si no quedan unidades');
+                //                 } elseif ($value === 'sin stock' && $record->unidades > 0) {
+                //                     $fail('No puedes marcar como "sin stock" si aún quedan unidades');
+                //                 }
+                //             },
+                //         ];
+                //     })
+                //     ->sortable(),
                 TextColumn::make('marca.nombre')->sortable(),
                 TextColumn::make('tipo.nombre')->sortable(),
                 TextColumn::make('modelo.nombre')->sortable(),
                 TextColumn::make('referencia')->sortable()->badge()->color('violet'),
-                TextColumn::make('unidades')->sortable(),
+                TextColumn::make('unidades')->sortable()->badge()
+                ->color(function($state){
+                        if($state == '0'){
+                            return 'danger';
+                        }else{
+                            return 'sky';
+                        }
+                }),
             ])
             ->filters([
                 //

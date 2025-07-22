@@ -8,8 +8,10 @@ use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Filament\Panel;
+use Filament\Models\Contracts\FilamentUser;
 
-class User extends Authenticatable implements HasAvatar
+class User extends Authenticatable implements HasAvatar,FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -70,5 +72,9 @@ class User extends Authenticatable implements HasAvatar
         return $this->foto_url
             ? asset($this->foto_url)
             : asset('storage/default-icon.png');
+    }
+    public function canAccessPanel(Panel $panel): bool
+    {
+	return true;
     }
 }

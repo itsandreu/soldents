@@ -52,9 +52,7 @@
                 }
             }
         </style>
-
         @filamentStyles
-
         {{ filament()->getTheme()->getHtml() }}
         {{ filament()->getFontHtml() }}
 
@@ -70,7 +68,7 @@
         @stack('styles')
 
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::STYLES_AFTER, scopes: $livewire->getRenderHookScopes()) }}
-
+        
         @if (! filament()->hasDarkMode())
             <script>
                 localStorage.setItem('theme', 'light')
@@ -81,6 +79,7 @@
             </script>
         @else
             <script>
+                
                 const theme = localStorage.getItem('theme') ?? @js(filament()->getDefaultThemeMode()->value)
 
                 if (
@@ -95,9 +94,12 @@
         @endif
 
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::HEAD_END, scopes: $livewire->getRenderHookScopes()) }}
+        <!-- <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/STLLoader.js"></script> -->
     </head>
 
     <body
+ 
         {{ $attributes
                 ->merge(($livewire ?? null)?->getExtraBodyAttributes() ?? [], escape: false)
                 ->class([
@@ -111,8 +113,10 @@
         {{ $slot }}
 
         @livewire(Filament\Livewire\Notifications::class)
-
+                    
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SCRIPTS_BEFORE, scopes: $livewire->getRenderHookScopes()) }}
+
+        @vite(['resources/js/app.js'])
 
         @filamentScripts(withCore: true)
 
@@ -129,5 +133,6 @@
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SCRIPTS_AFTER, scopes: $livewire->getRenderHookScopes()) }}
 
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::BODY_END, scopes: $livewire->getRenderHookScopes()) }}
+        
     </body>
 </html>

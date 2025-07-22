@@ -8,10 +8,10 @@ class TipoTrabajo extends Model
 {
     protected $fillable = [
         'nombre',
-
+        'precio'
     ];
 
     public function trabajos(){
-        return $this->belongsToMany(Trabajo::class);
+        return $this->belongsToMany(Trabajo::class)->withTimestamps();
     }
 }

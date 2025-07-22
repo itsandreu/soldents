@@ -4,6 +4,7 @@ namespace App\Filament\Resources\TrabajoResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\AttachAction;
@@ -11,6 +12,7 @@ use Filament\Tables\Actions\DetachAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class InterfasesRelationManager extends RelationManager
@@ -47,17 +49,25 @@ class InterfasesRelationManager extends RelationManager
                 AttachAction::make()
                 ->label('Añadir Interfase')
                 ->preloadRecordSelect()
-                ->recordTitle(fn($record) => 
-                    "{$record->marca->nombre} - {$record->tipo->nombre} 
-                    ( Diametro: {$record->diametro->valor} - AlturaH: {$record->alturaH->nombre} 
-                    - AlturaG: {$record->alturaG->valor} - Rotación: {$record->rotacion} - Ref: {$record->referencia})")
-                ->recordSelectOptionsQuery(
-                    fn(Builder $query) =>
-                    $query->where('status', 'En uso')
-                ),
+                ->recordTitle(fn($record) => "{$record->marca->nombre} - {$record->tipo->nombre} ( Diametro: {$record->diametro->valor} - AlturaH: {$record->alturaH->nombre} - AlturaG: {$record->alturaG->valor} - Rotación: {$record->rotacion} - Ref: {$record->referencia})")
+                ->modalWidth('4xl')
+                ->after(function (Model $record, Model $relatedRecord) {
+                    if ($relatedRecord->unidades > 0) {
+                        $relatedRecord->decrement('unidades');
+                    }
+                })->successNotificationMessage(function (Model $relatedRecord) {
+                    return "Interfase {$relatedRecord->marca->nombre} - {$relatedRecord->tipo->nombre} añadida";
+                }),
             ])
             ->actions([
                 DetachAction::make()->label('Quitar Interfase')
+                ->after(function (Model $record, Model $relatedRecord) {
+                    if ($relatedRecord->unidades > 0) {
+                        $relatedRecord->increment('unidades');
+                    }
+                })->successNotificationMessage(function (Model $relatedRecord) {
+                    return "Interfase {$relatedRecord->marca->nombre} - {$relatedRecord->tipo->nombre} desvinculada";
+                })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -108,7 +108,7 @@ class ResinaResource extends Resource
                         ];
                     })
                     ->sortable(),
-                TextColumn::make('tipo'),
+                TextColumn::make('tipo')->searchable(),
                 TextColumn::make('marca'),
                 TextColumn::make('litros'),
                 TextColumn::make('lote'),

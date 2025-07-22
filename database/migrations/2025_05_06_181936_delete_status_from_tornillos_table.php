@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('interfases', function (Blueprint $table) {
-            $table->dropColumn(['marca', 'tipo','diametro','alturaG','alturaH']);
+        Schema::table('tornillos', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('interfases', function (Blueprint $table) {
-            
+        Schema::table('tornillos', function (Blueprint $table) {
+            //
         });
     }
 };

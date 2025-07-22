@@ -16,4 +16,6 @@ class Inventario extends Cluster
     {
         return auth()->user()?->role === 'admin';
     }
+
+    
 }  

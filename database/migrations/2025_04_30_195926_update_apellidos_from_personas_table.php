@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('interfases', function (Blueprint $table) {
-            $table->unsignedBigInteger('interfase_altura_g_id');
+        Schema::table('personas', function (Blueprint $table) {
+            $table->string('apellidos')->nullable()->change();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('interfases', function (Blueprint $table) {
-            $table->dropIfExists('interfase_altura_g_id');
+        Schema::table('personas', function (Blueprint $table) {
+            //
         });
     }
 };

@@ -36,8 +36,11 @@ nav.flex {
 .fi-sidebar-header {
     background-color: rgb(51, 161, 153);
 }
-div.fi-layout{
-    background-color: #bcf1e5;
+div.fi-layout {
+    background-image: url('/backgrounds/Background2.png'); 
+    background-size: cover; /* para que se ajuste */
+    background-repeat: no-repeat; /* para que no se repita */
+    background-position: center center; /* centrado */
 }
 
 
@@ -262,3 +265,79 @@ svg.fi-sidebar-group-icon {
     @apply text-xs; /* Reduce el tamaño del texto */
 }
 
+.body {
+    background: red;
+}
+
+.day-hover-effect {
+    position: relative; /* Necesario para que el ::after esté relativo al día */
+    overflow: hidden; /* Por si acaso */
+}
+
+.day-hover-effect::after {
+    content: "+"; /* El símbolo */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem; /* Tamaño del + */
+    color: #2f855a; /* Verde más oscuro */
+    opacity: 0; /* Inicialmente invisible */
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* No bloquea click ni hover */
+}
+
+.day-hover-effect:hover::after {
+    opacity: 0.4; /* 🔥 Aparece difuminado */
+}
+
+.day-hover-effect:hover {
+    background-color: #e0f7fa; /* Tu color de fondo en hover */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.fc-daygrid-event-harness {
+    padding: 2px 4px;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    min-height: unset;
+}
+
+.fc-day-today {
+    background-color: #abdbd8 !important;
+}
+
+/* Estilo para el botón "3 más..." */
+.fc-more-link {
+    background-color: #38a169 !important; /* Verde bonito */
+    color: white !important;
+    font-size: 0.75rem !important;
+    padding: 2px 6px !important;
+    border-radius: 6px !important;
+    text-decoration: none !important;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover para que sea más dinámico */
+.fc-more-link:hover {
+    background-color: #2f855a !important; /* Verde más oscuro al pasar ratón */
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.fc-daygrid-event {
+    padding: 2px 4px !important;
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+    height: auto !important;
+    min-height: 18px !important;
+    border-radius: 4px !important;
+    margin: 2px 0 !important;
+}
+
+.fc-event-main {
+    font-size: 0.75rem !important;
+    padding: 0 !important;
+    line-height: 1rem !important;
+}
